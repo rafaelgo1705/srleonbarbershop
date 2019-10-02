@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1012588057510",
+    "firebase_url": "https://leonbarbershop-b1965.firebaseio.com",
+    "project_id": "leonbarbershop-b1965",
+    "storage_bucket": "leonbarbershop-b1965.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012588057510:android:01f72aff0d4df232cd3567",
+        "android_client_info": {
+          "package_name": "com.android.leonbarbershop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012588057510-d9g9rbk55h9g5qnrqh2l3cdj2j4s8gm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTNzHY27UVCJdLK1TvcZJkecsczADRtFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012588057510-d9g9rbk55h9g5qnrqh2l3cdj2j4s8gm0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1012588057510-36mq6rik82jtfdfh0ispcdkjogdr4s49.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "leonbarbershop"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
