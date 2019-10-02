@@ -37,6 +37,7 @@ export default class Home extends React.Component {
         snapshot.child("horarioAtendimento/0/SabFim").val(),
         snapshot.child("horarioAtendimento/0/DomInicio").val(),
         snapshot.child("horarioAtendimento/0/DomFim").val(),
+        snapshot.child("horarioAtendimento/0").val(),
       ]
 
       this.setState({textos:textos})
@@ -50,20 +51,23 @@ export default class Home extends React.Component {
   }
 
   verificarHora(){
-    var hora = new Date().getHours();
-    var diaDaSemana = this.diaDaSemana(new Date().getDate());
-    //if(diaDaSemana == this.state.textos[9]){
-      if(this.state.textos[3] > hora && hora < this.state.textos[4]){
-        return (
-          <Text style={estilos.textoStatusBarbeariaFechado}>Fechado</Text>
-        
-        );
+    var date = new Date();
+    var hora = date.getHours();
+    var diaDaSemana = this.diaDaSemana(date.getDate())
 
-      }else{
+    //if(diaDaSemana == this.state.textos[10]){
+      if(hora >= this.state.textos[3] && hora < this.state.textos[4]){
         return (
           <Text style={estilos.textoStatusBarbeariaAberto}>Aberto agora</Text>
           
         );  
+
+      }else{
+        return (
+          <Text style={estilos.textoStatusBarbeariaFechado}>Fechado</Text>
+        
+        );
+        
       }
 
     //}else if(diaDaSemana == this.state.textos[5]){
@@ -76,13 +80,12 @@ export default class Home extends React.Component {
   }
 
   horarioAtendimento(){
-    this.verificarHora();
     var horarioAtendimento = "Seg à Sex " + this.state.textos[3] + ":00 - " + this.state.textos[4] +":00 e Sáb " + this.state.textos[5] + ":00 - " + this.state.textos[6] + ":00";
 
     return horarioAtendimento;
   }
 
-  statusCarregar(){
+  /*statusCarregar(){
     if(this.state.textos[2] == true){
       return (
         <Text style={estilos.textoStatusBarbeariaAberto}>Aberto agora</Text>
@@ -96,7 +99,7 @@ export default class Home extends React.Component {
     }else{
       return null;
     }
-  }
+  }*/
 
   componentDidMount() {
     const { currentUser } = auth().currentUser;
@@ -124,7 +127,7 @@ export default class Home extends React.Component {
 
             <Text style={estilos.textoNormalNegrito}>Horário de atendimento</Text>
 
-            <Text style={estilos.textoNormal}>{this.horarioAtendimento()}</Text>
+            <Text onPress={this.verificarHora} style={estilos.textoNormal}>{this.horarioAtendimento()}</Text>
             
             {this.verificarHora()}
             
