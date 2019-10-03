@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {View, Image, Text, Alert, StatusBar, ScrollView} from 'react-native';
 import colors from '../../styles/colors';
 import estilos from '../../styles/estilos';
@@ -6,7 +6,7 @@ import estilos from '../../styles/estilos';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
-import HomeController from '../../controller/tabs/HomeController';
+import moment from 'moment';
 
 export default class Home extends React.Component {
   state = { currentUser: null }
@@ -14,11 +14,14 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {text:"", statusBarbearia: ""},
+    this.state = {text:"", statusBarbearia: ""};
+    this.state = {time: ''};
 
     this.state = ({
-      textos: []
+      textos: [],
     });
+
+    this.verificarHora()
 
   }
 
@@ -31,42 +34,76 @@ export default class Home extends React.Component {
         snapshot.child("textoTitulo").val(),
         snapshot.child("textoNormal").val(), 
         snapshot.child("statusAtendimento").val(),
-        snapshot.child("horarioAtendimento/0/SegSexInicio").val(),
-        snapshot.child("horarioAtendimento/0/SegSexFim").val(),
-        snapshot.child("horarioAtendimento/0/SabInicio").val(),
-        snapshot.child("horarioAtendimento/0/SabFim").val(),
-        snapshot.child("horarioAtendimento/0/DomInicio").val(),
-        snapshot.child("horarioAtendimento/0/DomFim").val(),
-        snapshot.child("horarioAtendimento/0").val(),
+        snapshot.child("horarioAtendimento/SegSexInicio").val(),
+        snapshot.child("horarioAtendimento/SegSexFim").val(),
+        snapshot.child("horarioAtendimento/SabInicio").val(),
+        snapshot.child("horarioAtendimento/SabFim").val(),
+        snapshot.child("horarioAtendimento/DomInicio").val(),
+        snapshot.child("horarioAtendimento/DomFim").val(),
       ]
 
       this.setState({textos:textos})
-
+        
     });
   }
 
   diaDaSemana(date) {
-    var data = new Date(date).getDay();    
-    return isNaN(data) ? null : ['DomInicio', 'SegSexInicio', 'SegSexInicio', 'SegSexInicio', 'SegSexInicio', 'SegSexInicio', 'SabInicio'][data];
+    var semana = new Array(7);
+    semana[0] = "Sunday";
+    semana[1] = "Monday";
+    semana[2] = "Tuesday";
+    semana[3] = "Wednesday";
+    semana[4] = "Thursday";
+    semana[5] = "Friday";
+    semana[6] = "Saturday";
+    
+    return semana[date.getDay()];
   }
 
   verificarHora(){
-    var date = new Date();
-    var hora = date.getHours();
-    var diaDaSemana = this.diaDaSemana(date.getDate())
+    var dayOfWeek = moment().toDate();
+    var diaDaSemana = this.diaDaSemana(dayOfWeek);
 
+    var hora = moment().format('HH');
+    
     //if(diaDaSemana == this.state.textos[10]){
       if(hora >= this.state.textos[3] && hora < this.state.textos[4]){
-        return (
-          <Text style={estilos.textoStatusBarbeariaAberto}>Aberto agora</Text>
-          
-        );  
+        const ref = database().ref("/leonbarbershop/textos");
+        const refHorarios = database().ref("/leonbarbershop/textos/horarioAtendimento");
 
-      }else{
-        return (
-          <Text style={estilos.textoStatusBarbeariaFechado}>Fechado</Text>
-        
-        );
+        ref.set({
+          textoTitulo: this.state.textos[0],
+          textoNormal: this.state.textos[1],
+          statusAtendimento: true,
+        })
+        refHorarios.set({
+          SegSexInicio: this.state.textos[3],
+          SegSexFim: this.state.textos[4],
+          SabInicio: this.state.textos[5],
+          SabFim: this.state.textos[6],
+          DomInicio: this.state.textos[7],
+          DomFim: this.state.textos[8],
+        })
+
+      }else {
+        Alert.alert("Aqui", this.state.textos[3])
+        /*const ref = database().ref("/leonbarbershop/textos");
+        const refHorarios = database().ref("/leonbarbershop/textos/horarioAtendimento");
+
+        ref.set({
+          textoTitulo: this.state.textos[0],
+          textoNormal: this.state.textos[1],
+          statusAtendimento: false,
+        })
+        refHorarios.set({
+          SegSexInicio: this.state.textos[3],
+          SegSexFim: this.state.textos[4],
+          SabInicio: this.state.textos[5],
+          SabFim: this.state.textos[6],
+          DomInicio: this.state.textos[7],
+          DomFim: this.state.textos[8],
+        })*/
+
         
       }
 
@@ -85,7 +122,7 @@ export default class Home extends React.Component {
     return horarioAtendimento;
   }
 
-  /*statusCarregar(){
+  statusCarregar(){
     if(this.state.textos[2] == true){
       return (
         <Text style={estilos.textoStatusBarbeariaAberto}>Aberto agora</Text>
@@ -99,13 +136,17 @@ export default class Home extends React.Component {
     }else{
       return null;
     }
-  }*/
+  }
 
   componentDidMount() {
     const { currentUser } = auth().currentUser;
     this.setState({ currentUser })
 
     this.preencherTextos();
+
+    while(this.state.textos.length != 0){
+      
+    }
   }
 
   componentWillUnmount() {
@@ -127,9 +168,9 @@ export default class Home extends React.Component {
 
             <Text style={estilos.textoNormalNegrito}>Horário de atendimento</Text>
 
-            <Text onPress={this.verificarHora} style={estilos.textoNormal}>{this.horarioAtendimento()}</Text>
+            <Text style={estilos.textoNormal}>{this.horarioAtendimento()}</Text>
             
-            {this.verificarHora()}
+            {this.statusCarregar()}
             
         </View>
       </ScrollView>

@@ -29,18 +29,18 @@ export default class PainelAdministrativo extends React.Component {
   carregarDados = () => {
     var ref = database().ref("/leonbarbershop/textos");
 
-    ref.on("value", (snapshot) => {
+    ref.once("value", (snapshot) => {
       let textos = [];
       textos = [
         snapshot.child("textoTitulo").val(),
         snapshot.child("textoNormal").val(),
         snapshot.child("statusAtendimento").val(),
-        snapshot.child("horarioAtendimento/0/SegSexInicio").val(),
-        snapshot.child("horarioAtendimento/0/SegSexFim").val(),
-        snapshot.child("horarioAtendimento/0/SabInicio").val(),
-        snapshot.child("horarioAtendimento/0/SabFim").val(),
-        snapshot.child("horarioAtendimento/0/DomInicio").val(),
-        snapshot.child("horarioAtendimento/0/DomFim").val(),   
+        snapshot.child("horarioAtendimento/SegSexInicio").val(),
+        snapshot.child("horarioAtendimento/SegSexFim").val(),
+        snapshot.child("horarioAtendimento/SabInicio").val(),
+        snapshot.child("horarioAtendimento/SabFim").val(),
+        snapshot.child("horarioAtendimento/DomInicio").val(),
+        snapshot.child("horarioAtendimento/DomFim").val(),   
       ]
 
       this.setState({textos:textos})
@@ -76,33 +76,32 @@ export default class PainelAdministrativo extends React.Component {
 
   alterarDados = () => {
       var ref = database().ref('/leonbarbershop/textos');
+      var refHorario = database().ref('/leonbarbershop/textos/horarioAtendimento');
 
       var titulo = this.state.inputTitulo;
       var texto = this.state.inputTexto;
       var statusBarbearia = this.state.statusBarbearia;
-      var horarioInicioSegSex = this.state.horaInicioSegSex;
-      var horarioFimSegSex = this.state.horaFimSegSex;
-      var horarioInicioSab = this.state.horaInicioSab;
-      var horarioFimSab = this.state.horaFimSab;
-      var horarioInicioDom = this.state.horaInicioDom;
-      var horarioFimDom = this.state.horaFimDom;
-
-      let arrayHorarios = [{
-        SegSexInicio: horarioInicioSegSex, 
-        SegSexFim: horarioFimSegSex,
-        SabInicio: horarioInicioSab,
-        SabFim: horarioFimSab,
-        DomInicio: horarioInicioDom,
-        DomFim: horarioFimDom,
-      }];
+      var SegSexInicio = this.state.horaInicioSegSex;
+      var SegSexFim = this.state.horaFimSegSex;
+      var SabInicio = this.state.horaInicioSab;
+      var SabFim = this.state.horaFimSab;
+      var DomInicio = this.state.horaInicioDom;
+      var DomFim = this.state.horaFimDom;
 
       if(this.validarCampos(titulo, texto)){
         ref.set({
           textoTitulo: titulo,
           textoNormal: texto,
           statusAtendimento: statusBarbearia,
-          horarioAtendimento: arrayHorarios,
-          
+
+        })
+        refHorario.set({
+          SegSexInicio: SegSexInicio,
+          SegSexFim: SegSexFim,
+          SabInicio: SabInicio,
+          SabFim: SabFim,
+          DomInicio: DomInicio,
+          DomFim: DomFim,
         })
       }
   }
@@ -187,9 +186,9 @@ export default class PainelAdministrativo extends React.Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({horaInicioSegSex: itemValue})
                   }>
-                  <Picker.Item label="07:00" value="7" />
-                  <Picker.Item label="08:00" value="8" />
-                  <Picker.Item label="09:00" value="9" />
+                  <Picker.Item label="07:00" value="07" />
+                  <Picker.Item label="08:00" value="08" />
+                  <Picker.Item label="09:00" value="09" />
                   <Picker.Item label="10:00" value="10" />
                   <Picker.Item label="11:00" value="11" />
                   <Picker.Item label="12:00" value="12" />
@@ -213,9 +212,9 @@ export default class PainelAdministrativo extends React.Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({horaFimSegSex: itemValue})
                   }>
-                  <Picker.Item label="07:00" value="7" />
-                  <Picker.Item label="08:00" value="8" />
-                  <Picker.Item label="09:00" value="9" />
+                  <Picker.Item label="07:00" value="07" />
+                  <Picker.Item label="08:00" value="08" />
+                  <Picker.Item label="09:00" value="09" />
                   <Picker.Item label="10:00" value="10" />
                   <Picker.Item label="11:00" value="11" />
                   <Picker.Item label="12:00" value="12" />
@@ -244,9 +243,9 @@ export default class PainelAdministrativo extends React.Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({horaInicioSab: itemValue})
                   }>
-                  <Picker.Item label="07:00" value="7" />
-                  <Picker.Item label="08:00" value="8" />
-                  <Picker.Item label="09:00" value="9" />
+                  <Picker.Item label="07:00" value="07" />
+                  <Picker.Item label="08:00" value="08" />
+                  <Picker.Item label="09:00" value="09" />
                   <Picker.Item label="10:00" value="10" />
                   <Picker.Item label="11:00" value="11" />
                   <Picker.Item label="12:00" value="12" />
@@ -270,9 +269,9 @@ export default class PainelAdministrativo extends React.Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({horaFimSab: itemValue})
                   }>
-                  <Picker.Item label="07:00" value="7" />
-                  <Picker.Item label="08:00" value="8" />
-                  <Picker.Item label="09:00" value="9" />
+                  <Picker.Item label="07:00" value="07" />
+                  <Picker.Item label="08:00" value="08" />
+                  <Picker.Item label="09:00" value="09" />
                   <Picker.Item label="10:00" value="10" />
                   <Picker.Item label="11:00" value="11" />
                   <Picker.Item label="12:00" value="12" />
@@ -300,9 +299,9 @@ export default class PainelAdministrativo extends React.Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({horaInicioDom: itemValue})
                   }>
-                  <Picker.Item label="07:00" value="7" />
-                  <Picker.Item label="08:00" value="8" />
-                  <Picker.Item label="09:00" value="9" />
+                  <Picker.Item label="07:00" value="07" />
+                  <Picker.Item label="08:00" value="08" />
+                  <Picker.Item label="09:00" value="09" />
                   <Picker.Item label="10:00" value="10" />
                   <Picker.Item label="11:00" value="11" />
                   <Picker.Item label="12:00" value="12" />
@@ -326,9 +325,9 @@ export default class PainelAdministrativo extends React.Component {
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({horaFimDom: itemValue})
                   }>
-                  <Picker.Item label="07:00" value="7" />
-                  <Picker.Item label="08:00" value="8" />
-                  <Picker.Item label="09:00" value="9" />
+                  <Picker.Item label="07:00" value="07" />
+                  <Picker.Item label="08:00" value="08" />
+                  <Picker.Item label="09:00" value="09" />
                   <Picker.Item label="10:00" value="10" />
                   <Picker.Item label="11:00" value="11" />
                   <Picker.Item label="12:00" value="12" />
