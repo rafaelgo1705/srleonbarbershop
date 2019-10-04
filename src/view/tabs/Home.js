@@ -19,9 +19,8 @@ export default class Home extends React.Component {
 
     this.state = ({
       textos: [],
+      arrayHorarios:[],
     });
-
-    this.verificarHora()
 
   }
 
@@ -34,28 +33,28 @@ export default class Home extends React.Component {
         snapshot.child("textoTitulo").val(),
         snapshot.child("textoNormal").val(), 
         snapshot.child("statusAtendimento").val(),
-        snapshot.child("horarioAtendimento/SegSexInicio").val(),
-        snapshot.child("horarioAtendimento/SegSexFim").val(),
-        snapshot.child("horarioAtendimento/SabInicio").val(),
-        snapshot.child("horarioAtendimento/SabFim").val(),
-        snapshot.child("horarioAtendimento/DomInicio").val(),
-        snapshot.child("horarioAtendimento/DomFim").val(),
+        snapshot.child("horarioAtendimento/0/SegSexInicio").val(),
+        snapshot.child("horarioAtendimento/0/SegSexFim").val(),
+        snapshot.child("horarioAtendimento/0/SabInicio").val(),
+        snapshot.child("horarioAtendimento/0/SabFim").val(),
+        snapshot.child("horarioAtendimento/0/DomInicio").val(),
+        snapshot.child("horarioAtendimento/0/DomFim").val(),
       ]
 
       this.setState({textos:textos})
-        
+      this.verificarHora();
     });
   }
 
   diaDaSemana(date) {
     var semana = new Array(7);
-    semana[0] = "Sunday";
-    semana[1] = "Monday";
-    semana[2] = "Tuesday";
-    semana[3] = "Wednesday";
-    semana[4] = "Thursday";
-    semana[5] = "Friday";
-    semana[6] = "Saturday";
+    semana[0] = "Domingo";
+    semana[1] = "SegSex";
+    semana[2] = "SegSex";
+    semana[3] = "SegSex";
+    semana[4] = "SegSex";
+    semana[5] = "SegSex";
+    semana[6] = "Sabado";
     
     return semana[date.getDay()];
   }
@@ -65,61 +64,150 @@ export default class Home extends React.Component {
     var diaDaSemana = this.diaDaSemana(dayOfWeek);
 
     var hora = moment().format('HH');
-    
-    //if(diaDaSemana == this.state.textos[10]){
+    if(diaDaSemana == "SegSex"){
       if(hora >= this.state.textos[3] && hora < this.state.textos[4]){
+        Alert.alert("Hoje é ", "Segunda a Sexta")
+        let arrayHorarios = [{
+          SegSexInicio:this.state.textos[3],
+          SegSexFim:this.state.textos[4],
+          SabInicio:this.state.textos[5],
+          SabFim:this.state.textos[6],
+          DomInicio:this.state.textos[7],
+          DomFim:this.state.textos[8],
+        }]
+
         const ref = database().ref("/leonbarbershop/textos");
-        const refHorarios = database().ref("/leonbarbershop/textos/horarioAtendimento");
 
         ref.set({
           textoTitulo: this.state.textos[0],
           textoNormal: this.state.textos[1],
           statusAtendimento: true,
-        })
-        refHorarios.set({
-          SegSexInicio: this.state.textos[3],
-          SegSexFim: this.state.textos[4],
-          SabInicio: this.state.textos[5],
-          SabFim: this.state.textos[6],
-          DomInicio: this.state.textos[7],
-          DomFim: this.state.textos[8],
+          horarioAtendimento: arrayHorarios
         })
 
-      }else {
-        Alert.alert("Aqui", this.state.textos[3])
-        /*const ref = database().ref("/leonbarbershop/textos");
-        const refHorarios = database().ref("/leonbarbershop/textos/horarioAtendimento");
+      }else if(hora < this.state.textos[3] || hora >= this.state.textos[4]){
+        let arrayHorarios = [{
+          SegSexInicio:this.state.textos[3],
+          SegSexFim:this.state.textos[4],
+          SabInicio:this.state.textos[5],
+          SabFim:this.state.textos[6],
+          DomInicio:this.state.textos[7],
+          DomFim:this.state.textos[8],
+        }]
+
+        const ref = database().ref("/leonbarbershop/textos");
 
         ref.set({
           textoTitulo: this.state.textos[0],
           textoNormal: this.state.textos[1],
           statusAtendimento: false,
+          horarioAtendimento: arrayHorarios
         })
-        refHorarios.set({
-          SegSexInicio: this.state.textos[3],
-          SegSexFim: this.state.textos[4],
-          SabInicio: this.state.textos[5],
-          SabFim: this.state.textos[6],
-          DomInicio: this.state.textos[7],
-          DomFim: this.state.textos[8],
-        })*/
-
-        
       }
 
-    //}else if(diaDaSemana == this.state.textos[5]){
+    }else if(diaDaSemana == "Sabado"){
+      Alert.alert("Hoje é ", "Sabado")
+      if(hora >= this.state.textos[5] && hora < this.state.textos[6]){
+        let arrayHorarios = [{
+          SegSexInicio:this.state.textos[3],
+          SegSexFim:this.state.textos[4],
+          SabInicio:this.state.textos[5],
+          SabFim:this.state.textos[6],
+          DomInicio:this.state.textos[7],
+          DomFim:this.state.textos[8],
+        }]
 
+        const ref = database().ref("/leonbarbershop/textos");
 
-    //}else if(diaDaSemana == this.state.textos[7]){
-      
-    
-    //}    
+        ref.set({
+          textoTitulo: this.state.textos[0],
+          textoNormal: this.state.textos[1],
+          statusAtendimento: true,
+          horarioAtendimento: arrayHorarios
+        })
+
+      }else if(hora < this.state.textos[3] || hora >= this.state.textos[4]){
+        let arrayHorarios = [{
+          SegSexInicio:this.state.textos[3],
+          SegSexFim:this.state.textos[4],
+          SabInicio:this.state.textos[5],
+          SabFim:this.state.textos[6],
+          DomInicio:this.state.textos[7],
+          DomFim:this.state.textos[8],
+        }]
+
+        const ref = database().ref("/leonbarbershop/textos");
+
+        ref.set({
+          textoTitulo: this.state.textos[0],
+          textoNormal: this.state.textos[1],
+          statusAtendimento: false,
+          horarioAtendimento: arrayHorarios
+        })
+      }
+
+    }else if(diaDaSemana == "Domingo"){
+      Alert.alert("Hoje é ", "Domingo")
+      if(hora >= this.state.textos[7] && hora < this.state.textos[8]){
+        let arrayHorarios = [{
+          SegSexInicio:this.state.textos[3],
+          SegSexFim:this.state.textos[4],
+          SabInicio:this.state.textos[5],
+          SabFim:this.state.textos[6],
+          DomInicio:this.state.textos[7],
+          DomFim:this.state.textos[8],
+        }]
+
+        const ref = database().ref("/leonbarbershop/textos");
+
+        ref.set({
+          textoTitulo: this.state.textos[0],
+          textoNormal: this.state.textos[1],
+          statusAtendimento: true,
+          horarioAtendimento: arrayHorarios
+        })
+
+      }else if(hora < this.state.textos[3] || hora >= this.state.textos[4]){
+        let arrayHorarios = [{
+          SegSexInicio:this.state.textos[3],
+          SegSexFim:this.state.textos[4],
+          SabInicio:this.state.textos[5],
+          SabFim:this.state.textos[6],
+          DomInicio:this.state.textos[7],
+          DomFim:this.state.textos[8],
+        }]
+
+        const ref = database().ref("/leonbarbershop/textos");
+
+        ref.set({
+          textoTitulo: this.state.textos[0],
+          textoNormal: this.state.textos[1],
+          statusAtendimento: false,
+          horarioAtendimento: arrayHorarios
+        })
+      }
+    }    
   }
 
   horarioAtendimento(){
-    var horarioAtendimento = "Seg à Sex " + this.state.textos[3] + ":00 - " + this.state.textos[4] +":00 e Sáb " + this.state.textos[5] + ":00 - " + this.state.textos[6] + ":00";
+    var horarios = "";
+    if(this.state.textos[3] != null && this.state.textos[4] != null){
+      horarios += "Seg à Sex " + this.state.textos[3] + ":00 - " + this.state.textos[4] + ":00";
+    
+    } 
+    if(this.state.textos[5] != null && this.state.textos[6] != null){
+      horarios += "\nSábado " +this.state.textos[5] +":00 - " + this.state.textos[6] + ":00";
 
-    return horarioAtendimento;
+    }
+    if(this.state.textos[7] != null && this.state.textos[8] != null){
+      horarios += "\nDomingo " +this.state.textos[7] +":00 - " + this.state.textos[8] + ":00";
+
+    }
+
+    return (
+      <Text style={estilos.textoNormalNegrito}> {horarios} </Text>
+         
+    );
   }
 
   statusCarregar(){
@@ -144,9 +232,6 @@ export default class Home extends React.Component {
 
     this.preencherTextos();
 
-    while(this.state.textos.length != 0){
-      
-    }
   }
 
   componentWillUnmount() {
@@ -160,15 +245,13 @@ export default class Home extends React.Component {
       <ScrollView contentContainerStyle={estilos.scrollViewLogin}>
         <View style={{backgroundColor: colors.corApp, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <StatusBar backgroundColor={colors.corIconesAtivos} barStyle="light-content" />
-          <Image source={require('../../imagens/logo.png')} style={{marginBottom: -10, padding: 0, height:200, width:200}}></Image>
+            <Image source={require('../../imagens/logo.png')} style={{marginBottom: -10, padding: 0, height:200, width:200}}></Image>
     
             <Text style={estilos.textoTitulo}>{this.state.textos[0]}</Text>
 
             <Text style={estilos.textoNormal}>{this.state.textos[1]}</Text>
 
-            <Text style={estilos.textoNormalNegrito}>Horário de atendimento</Text>
-
-            <Text style={estilos.textoNormal}>{this.horarioAtendimento()}</Text>
+            {this.horarioAtendimento()}
             
             {this.statusCarregar()}
             

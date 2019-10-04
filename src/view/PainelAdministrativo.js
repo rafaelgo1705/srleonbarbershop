@@ -5,6 +5,8 @@ import estilos from '../styles/estilos';
 
 import database from '@react-native-firebase/database';
 
+import moment from 'moment';
+
 export default class PainelAdministrativo extends React.Component {
   constructor(props){
     super(props);
@@ -35,12 +37,12 @@ export default class PainelAdministrativo extends React.Component {
         snapshot.child("textoTitulo").val(),
         snapshot.child("textoNormal").val(),
         snapshot.child("statusAtendimento").val(),
-        snapshot.child("horarioAtendimento/SegSexInicio").val(),
-        snapshot.child("horarioAtendimento/SegSexFim").val(),
-        snapshot.child("horarioAtendimento/SabInicio").val(),
-        snapshot.child("horarioAtendimento/SabFim").val(),
-        snapshot.child("horarioAtendimento/DomInicio").val(),
-        snapshot.child("horarioAtendimento/DomFim").val(),   
+        snapshot.child("horarioAtendimento/0/SegSexInicio").val(),
+        snapshot.child("horarioAtendimento/0/SegSexFim").val(),
+        snapshot.child("horarioAtendimento/0/SabInicio").val(),
+        snapshot.child("horarioAtendimento/0/SabFim").val(),
+        snapshot.child("horarioAtendimento/0/DomInicio").val(),
+        snapshot.child("horarioAtendimento/0/DomFim").val(),   
       ]
 
       this.setState({textos:textos})
@@ -74,9 +76,24 @@ export default class PainelAdministrativo extends React.Component {
     });
   }
 
+  diaDaSemana(date) {
+    var semana = new Array(7);
+    semana[0] = "Domingo";
+    semana[1] = "SegSex";
+    semana[2] = "SegSex";
+    semana[3] = "SegSex";
+    semana[4] = "SegSex";
+    semana[5] = "SegSex";
+    semana[6] = "Sabado";
+    
+    return semana[date.getDay()];
+  }
+
   alterarDados = () => {
+      var dayOfWeek = moment().toDate();
+      var diaDaSemana = this.diaDaSemana(dayOfWeek);
+
       var ref = database().ref('/leonbarbershop/textos');
-      var refHorario = database().ref('/leonbarbershop/textos/horarioAtendimento');
 
       var titulo = this.state.inputTitulo;
       var texto = this.state.inputTexto;
@@ -88,21 +105,27 @@ export default class PainelAdministrativo extends React.Component {
       var DomInicio = this.state.horaInicioDom;
       var DomFim = this.state.horaFimDom;
 
+      let arrayHorarios = [{
+        SegSexInicio:SegSexInicio,
+        SegSexFim:SegSexFim,
+        SabInicio:SabInicio,
+        SabFim:SabFim,
+        DomInicio:DomInicio,
+        DomFim:DomFim,
+        DiaSemana:diaDaSemana
+      }]
+
       if(this.validarCampos(titulo, texto)){
         ref.set({
           textoTitulo: titulo,
           textoNormal: texto,
           statusAtendimento: statusBarbearia,
-
-        })
-        refHorario.set({
-          SegSexInicio: SegSexInicio,
-          SegSexFim: SegSexFim,
-          SabInicio: SabInicio,
-          SabFim: SabFim,
-          DomInicio: DomInicio,
-          DomFim: DomFim,
-        })
+          horarioAtendimento: arrayHorarios
+        }).then(function(){
+          Alert.alert("Sucesso", "Os dados foram alterados!")
+        }).catch(function(){
+          Alert.alert("Erro", "Não foi possível alterar os dados!")
+        });
       }
   }
 

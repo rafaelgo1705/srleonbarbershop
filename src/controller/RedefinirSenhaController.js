@@ -12,6 +12,7 @@ export default class RedefinirSenhaController {
                         user.updatePassword(senhaNova).then(() => {
                             Alert.alert("Sucesso", "Senha alterada com sucesso!")
                         }).catch((error) => { 
+                            Alert.alert("Erro", "Não foi possível alterar a senha!")
                             console.log(error); 
                         });
         
