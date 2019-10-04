@@ -531,6 +531,16 @@ const estilos = {
         paddingHorizontal: 20
     },
 
+    buttonCadastoCabeleireiro: {
+        backgroundColor: colors.corApp,
+        height: 45,
+        borderRadius: 30,
+        marginVertical: 15,
+        justifyContent:'center', 
+        alignContent: 'flex-end',
+        alignItems: 'center',
+    },
+
     /**Fim Tela cadastro agenda */
 }
 
