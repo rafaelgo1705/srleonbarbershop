@@ -21,6 +21,7 @@ import RedefinirSenha from './src/view/RedefinirSenha';
 import EditarConta from './src/view/EditarConta';
 import PainelAdministrativo from './src/view/PainelAdministrativo';
 import CadastroAdministrativo from './src/view/CadastroAdministrativo';
+import GestaoCabeleireiros from './src/view/painelcadastros/GestaoCabeleireiros';
 
 const AppCreateBottomTabNavigator = createBottomTabNavigator({
   Home,
@@ -62,7 +63,7 @@ const AppCreateBottomTabNavigator = createBottomTabNavigator({
 
 const AppCreateBottomTabNavigatorPainel = createBottomTabNavigator ({
   Painel: {screen: PainelAdministrativo},
-  Cadastro: {screen: CadastroAdministrativo}
+  Cadastramento: {screen: CadastroAdministrativo}
 }, {
   initialRouteName: 'Painel',
   defaultNavigationOptions: ({ navigation }) => ({
@@ -75,7 +76,7 @@ const AppCreateBottomTabNavigatorPainel = createBottomTabNavigator ({
       if (routeName === 'Painel') {
         iconName = typeIcon+`-browsers`;
         
-      } else if (routeName === 'Cadastro') {
+      } else if (routeName === 'Cadastramento') {
         iconName = typeIcon+`-filing`;
       } 
 
@@ -98,6 +99,8 @@ const AppCreateSwitchNavigator = createSwitchNavigator ({
   RedefinirSenha: {screen: RedefinirSenha},
   EditarConta: {screen: EditarConta},
   TabPainel: {screen: AppCreateBottomTabNavigatorPainel},
+
+  GestaoCabeleireiros: {screen: GestaoCabeleireiros},
 },{
   initialRouteName: 'SplashScreen'
 })

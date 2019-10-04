@@ -520,6 +520,18 @@ const estilos = {
         fontFamily: 'Segoe UI'
     },
     /**Fim Tela Painel */
+    /**Tela cadastro agenda */
+    buttonCadastroAgenda: {
+        backgroundColor: colors.corButtonLogin,
+        marginVertical: 15,
+        height: 70,
+        borderRadius: 30,
+        justifyContent:'center', 
+        alignContent:'center',
+        paddingHorizontal: 20
+    },
+
+    /**Fim Tela cadastro agenda */
 }
 
 export default estilos;

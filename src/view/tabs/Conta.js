@@ -72,10 +72,9 @@ export default class Conta extends React.Component {
                 </View>
               </View>
 
-              <View style={estilos.viewEditarConta}>
-                <Text style={estilos.textoNormalEditarConta} onPress={this.editarConta}>Editar conta</Text>
-                <Image source={require('../../imagens/icons/icon_edit.png')} style={{justifyContent: 'center', alignItems: 'center', marginLeft: 5, height:18, width:18}}></Image>
-              </View>
+            <TouchableOpacity style={estilos.viewEditarConta} onPress={this.editarConta}><Text style={estilos.textoNormalEditarConta}> Editar conta</Text>
+              <Image source={require('../../imagens/icons/icon_edit.png')} style={{justifyContent: 'center', alignItems: 'center', marginLeft: 5, height:18, width:18}}></Image>
+            </TouchableOpacity>
             </View>
             <View style={{flex: 1}}>
               <View>
