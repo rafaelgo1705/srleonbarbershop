@@ -14,8 +14,14 @@ export default class GestaoCabeleireiros extends React.Component {
 
     this.state = {
       inputNome: "",
-      modalVisible: false,
+      verModal: false,
     };
+
+    this.state = ({
+      arrayCabeleireiros: [],
+    })
+
+    this.carregarListaCabeleireiros
     
   }
 
@@ -30,10 +36,6 @@ export default class GestaoCabeleireiros extends React.Component {
     this.backHandler.remove();
   }
 
-  state = {
-    verModal: false
-  };
-
   exibirOcultarModal = () => {
     this.setState({ verModal: !this.state.verModal });
   };
@@ -42,7 +44,7 @@ export default class GestaoCabeleireiros extends React.Component {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
 
     ref.push().set({
-      nome:this.state.inputNome,
+      nome: this.state.inputNome,
     }).then(() => {
       Alert.alert("Sucesso", "O cabeleireiro foi cadastrado!",
       [
@@ -54,20 +56,30 @@ export default class GestaoCabeleireiros extends React.Component {
     });
   }
 
-  carregarListaCabeleireiros(){
+  carregarListaCabeleireiros = () => {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
 
-    ref.orderByChild("nome").equalTo("Rafael").on("value", (snapshot) => {
-      Alert.alert(snapshot.child("nome"))
+    ref.orderByChild("nome").on("value", (snapshot) => {
+      snapshot.forEach((data) => {
+        data.forEach((dataNomes) => {
+          let nomes = [];
+          nomes = [
+            dataNomes.val()
+            
+          ]
+          this.setState({arrayCabeleireiros:nomes})
+          console.log("Id: "+ this.state.arrayCabeleireiros + " | Nome: "+ this.state.arrayCabeleireiros);        
+        })
+      });
     })
-
   }
 
   render() {
     return (
         <View style={estilos.viewInicialLogin}>
-          <Text>Cabeleireiros</Text>
-          {this.carregarListaCabeleireiros}
+          <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.carregarListaCabeleireiros} >
+                  <Text style={estilos.textLoginCadastro}>Mostrar</Text>
+                </TouchableOpacity>
             <Modal isVisible={this.state.verModal} onRequestClose={this.exibirOcultarModal}>
               <View style={{ flex: 1, justifyContent:"center"}}>
                 <Text style={estilos.textLoginInicial}>Novo cabeleireiro</Text>
