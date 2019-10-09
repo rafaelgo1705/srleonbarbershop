@@ -66,7 +66,6 @@ export default class Home extends React.Component {
     var hora = moment().format('HH');
     if(diaDaSemana == "SegSex"){
       if(hora >= this.state.textos[3] && hora < this.state.textos[4]){
-        Alert.alert("Hoje é ", "Segunda a Sexta")
         let arrayHorarios = [{
           SegSexInicio:this.state.textos[3],
           SegSexFim:this.state.textos[4],
@@ -106,7 +105,6 @@ export default class Home extends React.Component {
       }
 
     }else if(diaDaSemana == "Sabado"){
-      Alert.alert("Hoje é ", "Sabado")
       if(hora >= this.state.textos[5] && hora < this.state.textos[6]){
         let arrayHorarios = [{
           SegSexInicio:this.state.textos[3],
@@ -147,7 +145,6 @@ export default class Home extends React.Component {
       }
 
     }else if(diaDaSemana == "Domingo"){
-      Alert.alert("Hoje é ", "Domingo")
       if(hora >= this.state.textos[7] && hora < this.state.textos[8]){
         let arrayHorarios = [{
           SegSexInicio:this.state.textos[3],

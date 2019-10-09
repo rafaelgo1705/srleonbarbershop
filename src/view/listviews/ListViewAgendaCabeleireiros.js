@@ -1,56 +1,46 @@
 import React from 'react';
-import {SafeAreaView, TouchableOpacity, FlatList, Text, Image, View} from 'react-native';
+import {TouchableOpacity, FlatList, Text, Image, View} from 'react-native';
 
 import colors from '../../styles/colors';
 import estilos from '../../styles/estilos';
 
 import database from '@react-native-firebase/database';
 
-export default class GestaoCabeleireiros extends React.Component {
+export default class ListViewAgendaCabeleireiros extends React.Component {
   constructor(props){
     super(props);
 
-    this.state = ({
+    this.state = {
       arrayCabeleireiros: [],
-    })
+      nome: '',
+      avaliacao: '',
+    }
 
-    this.carregarListaCabeleireiros();
-    
   }
 
-  carregarListaCabeleireiros = () => {
+  componentDidMount(){
+    this.carregarListaCabeleireiros();
+  }
+
+  carregarListaCabeleireiros() {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
 
     ref.orderByChild("nome").on("child_added", (snapshot) => {
-      snapshot.forEach((data) => {      
-          let nomes = [];
-          nomes = [
-            data.val(),
-            data.key,
-            "avaliacao",
-          ]
-
-          this.setState({arrayCabeleireiros:nomes})
-          console.log("Nome: "+ this.state.arrayCabeleireiros[0]+ " | " + snapshot.key);  
+      snapshot.forEach((data) => {  
+          this.setState({ 
+            arrayCabeleireiros : 
+              [...this.state.arrayCabeleireiros, ...[
+                {
+                  id:snapshot.key,
+                  nome:data.val(),
+                  avaliacao:"avaliação"
+                }
+            ]] 
+            })
       });
+        
     })
-  }
 
-  Item( id, nome, avaliacao ) {
-    return (
-      <TouchableOpacity
-        style={[
-          estilos.item,
-          { backgroundColor: colors.corBranca },
-        ]}
-      >
-        <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
-        <View style={{flexDirection:'column'}}>
-          <Text style={estilos.title}>{nome}</Text>
-          <Text style={estilos.textoNormalProduto}>{avaliacao}</Text>
-        </View>
-      </TouchableOpacity>
-    );
   }
 
   render() {
@@ -58,8 +48,23 @@ export default class GestaoCabeleireiros extends React.Component {
       <View >
         <FlatList
           data={this.state.arrayCabeleireiros}
-          renderItem={this.Item}
-          keyExtractor={item => item.uid}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                style={[
+                  estilos.itemArray,
+                  { backgroundColor: colors.corBranca },
+                ]}
+              >
+                <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={estilos.title}>{item.nome}</Text>
+                  <Text style={estilos.textoNormalProduto}>{item.avaliacao}</Text>
+                </View>
+              </TouchableOpacity>
+            ) 
+          }}
+          keyExtractor={item => item.id}
         />
       </View>
     );

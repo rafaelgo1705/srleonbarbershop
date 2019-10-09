@@ -381,11 +381,10 @@ const estilos = {
         flex: 1,
       },
     
-      item: {
+      itemArray: {
         borderBottomWidth: 0.5,
         borderColor: colors.corSelecionado,
         padding: 15,
-        marginHorizontal: 10,
         flexDirection: 'row',
       },
     
@@ -415,7 +414,7 @@ const estilos = {
 
     viewTabs: {
         flex: 1, 
-        backgroundColor: colors.corVermelhaApp,
+        backgroundColor: colors.corBranca,
     },
 
     /**Tela Redefinir Senha */

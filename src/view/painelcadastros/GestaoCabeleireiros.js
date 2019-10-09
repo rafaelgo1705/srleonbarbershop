@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, BackHandler, ScrollView, Text, TextInput, TouchableOpacity, Alert} from 'react-native';
+import {View, BackHandler, FlatList, Text, TextInput, TouchableOpacity, Alert, Image} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Modal from "react-native-modal";
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import database from '@react-native-firebase/database';
 
@@ -15,17 +16,21 @@ export default class GestaoCabeleireiros extends React.Component {
     this.state = {
       inputNome: "",
       verModal: false,
+
+      nomeCabeleireiro: "",
+      inputNomeCabeleireiro: "",
+      idCabeleireiro: "",
+      verModalEditar: false,
     };
 
     this.state = ({
       arrayCabeleireiros: [],
     })
-
-    this.carregarListaCabeleireiros
     
   }
 
   componentDidMount() {
+    this.carregarListaCabeleireiros();
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.props.navigation.navigate('Cadastramento');
       return true;
@@ -59,27 +64,69 @@ export default class GestaoCabeleireiros extends React.Component {
   carregarListaCabeleireiros = () => {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
 
-    ref.orderByChild("nome").on("value", (snapshot) => {
-      snapshot.forEach((data) => {
-        data.forEach((dataNomes) => {
-          let nomes = [];
-          nomes = [
-            dataNomes.val()
-            
-          ]
-          this.setState({arrayCabeleireiros:nomes})
-          console.log("Id: "+ this.state.arrayCabeleireiros + " | Nome: "+ this.state.arrayCabeleireiros);        
-        })
+    ref.orderByChild("nome").on("child_added", (snapshot) => {
+      snapshot.forEach((data) => {  
+          this.setState({ 
+            arrayCabeleireiros : 
+              [...this.state.arrayCabeleireiros, ...[
+                {
+                  id:snapshot.key,
+                  nome:data.val(),
+                  avaliacao:"avaliação"
+                }
+            ]] 
+            })
       });
+        
     })
+  }
+
+  exibirOcultarModalEditar = (item) => {
+    this.setState({nomeCabeleireiro: item.nome})
+    this.setState({idCabeleireiro: item.id})
+    this.setState({ verModalEditar: !this.state.verModalEditar });
+  }
+
+  editarCabeleireiro = () => {
+    var ref = database().ref("/leonbarbershop/cabeleireiros/"+this.state.idCabeleireiro);
+
+    ref.set({
+      nome: this.state.inputNomeCabeleireiro
+    })
+  }
+
+  excluirCabeleireiro = () => {
+
   }
 
   render() {
     return (
-        <View style={estilos.viewInicialLogin}>
-          <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.carregarListaCabeleireiros} >
-                  <Text style={estilos.textLoginCadastro}>Mostrar</Text>
-                </TouchableOpacity>
+        <View style={estilos.viewTabs}>
+          <FlatList
+            data={this.state.arrayCabeleireiros}
+            renderItem={({ item }) => {
+              return (
+                <View style={[estilos.itemArray, { backgroundColor: colors.corBranca }]}>
+                  <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
+                  <View style={{flexDirection:'column'}}>
+                    <Text style={estilos.title}>{item.nome}</Text>
+                    <Text style={estilos.textoNormalProduto}>{item.avaliacao}</Text>
+                  </View>
+                  <View style={{flex: 1, flexDirection:"column", alignItems:"flex-end", justifyContent: "center", marginRight: 0}}>
+                    <View style={{flexDirection:"row"}}>
+                      <TouchableOpacity onPress={() => this.exibirOcultarModalEditar(item)}>
+                        <Image source={require('../../imagens/icons/icon_edit_black.png')} style={{justifyContent: 'center', alignContent: 'center', marginRight: 10, height:30, width:30}}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => this.excluirCabeleireiro(item)}>
+                        <Image source={require('../../imagens/icons/icon_delete.png')} style={{justifyContent: 'center', alignContent: 'center', marginBottom: 0, padding: 0, height:35, width:35}}/>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              ) 
+            }}
+            keyExtractor={item => item.id}
+          />
             <Modal isVisible={this.state.verModal} onRequestClose={this.exibirOcultarModal}>
               <View style={{ flex: 1, justifyContent:"center"}}>
                 <Text style={estilos.textLoginInicial}>Novo cabeleireiro</Text>
@@ -102,8 +149,30 @@ export default class GestaoCabeleireiros extends React.Component {
               </View>
             </Modal>
 
+            <Modal isVisible={this.state.verModalEditar} onRequestClose={this.exibirOcultarModalEditar}>
+              <View style={{ flex: 1, justifyContent:"center"}}>
+                <Text style={estilos.textLoginInicial}>{this.state.nomeCabeleireiro}</Text>
+                  <TextInput
+                    onChangeText={(text) => this.setState({inputNomeCabeleireiro: text})}
+                    blurOnSubmit={false} 
+                    style={estilos.textLoginInput} 
+                    keyboardType='name-phone-pad' 
+                    placeholder='Nome...' 
+                    textContentType='name'>{this.state.nomeCabeleireiro}
+                  </TextInput>
+                  <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.editarCabeleireiro}>
+                    <Text style={estilos.textLoginCadastro}>Alterar</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={estilos.buttonExcluirConta} onPress={this.exibirOcultarModalEditar} >
+                    <Text style={estilos.textLoginCadastro}>Cancelar</Text>
+                  </TouchableOpacity>      
+              </View>
+            </Modal>
+
           <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
 
+          <ActionButton position="left" buttonColor={colors.corButtonLogin} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
         </View>
     );
   }
