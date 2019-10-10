@@ -10,7 +10,9 @@ export default class ListViewAgendaCortes extends React.Component {
 
     this.state = {
       arrayCortes: [],
-      nome: '',
+      id:'',
+      titulo: '',
+      texto:'',
       preco: '',
     }
 
@@ -30,7 +32,8 @@ export default class ListViewAgendaCortes extends React.Component {
               [...this.state.arrayCortes, ...[
                 {
                   id:snapshot.key,
-                  nome:data.val(),
+                  titulo:data.val(),
+                  texto: data.val(),
                   preco:"15"
                 }
             ]] 
@@ -47,20 +50,21 @@ export default class ListViewAgendaCortes extends React.Component {
         <FlatList
           data={this.state.arrayCortes}
           renderItem={({ item }) => {
-            return (
               <TouchableOpacity
                 style={[
                   estilos.itemArray,
                   { backgroundColor: colors.corBranca },
-                ]}
-              >
+                ]}>
                 <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
                 <View style={{flexDirection:'column'}}>
-                  <Text style={estilos.title}>{item.nome}</Text>
-                  <Text style={estilos.textoNormalProduto}>{item.preco}</Text>
+                  <Text style={estilos.title}>{item.titulo}</Text>
+                  <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
+                </View>
+                <View style={estilos.estiloPreco}>
+                  <Text style={estilos.textoPreco}>{item.preco}</Text>
                 </View>
               </TouchableOpacity>
-            ) 
+            
           }}
           keyExtractor={item => item.id}
         />

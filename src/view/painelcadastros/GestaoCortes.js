@@ -5,32 +5,38 @@ import Modal from "react-native-modal";
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import database from '@react-native-firebase/database';
 
-export default class GestaoCabeleireiros extends React.Component {
+export default class GestaoCortes extends React.Component {
   constructor(props){
     super(props);
 
     this.state = {
-      inputNome: "",
+      inputTitulo: "",
+      inputTexto: "",
+      inputPreco: "",
       verModal: false,
 
-      nomeCabeleireiro: "",
-      inputNomeCabeleireiro: "",
-      idCabeleireiro: "",
+      inputTituloEditar: "",
+      inputPrecoEditar: "",
+      inputTextoEditar: "",
+
+      tituloCorte: "",
+      idCorte: "",
+      preco:0.0,
+      texto:"",
       verModalEditar: false,
     };
 
     this.state = ({
-      arrayCabeleireiros: [],
+      arrayCortes: [],
     })
     
   }
 
   componentDidMount() {
-    this.carregarListaCabeleireiros();
+    this.carregarListaCortes();
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.props.navigation.navigate('Cadastramento');
       return true;
@@ -45,55 +51,58 @@ export default class GestaoCabeleireiros extends React.Component {
     this.setState({ verModal: !this.state.verModal });
   };
 
-  salvarCabeleireiro = () => {
-    var ref = database().ref("/leonbarbershop/cabeleireiros");
+  salvarCorte = () => {
+    var ref = database().ref("/leonbarbershop/cortes");
 
     ref.push().set({
-      nome: this.state.inputNome,
+        titulo:this.state.inputTitulo,
+        preco:this.state.inputPreco,
+        texto:this.state.inputTexto,
     }).then(() => {
-      Alert.alert("Sucesso", "O cabeleireiro foi cadastrado!",
+      Alert.alert("Sucesso", "O corte foi cadastrado!",
       [
         {text: 'Ok', onPress: this.exibirOcultarModal}
       ])
       
     }).catch(function(){
-      Alert.alert("Erro", "Não foi possível cadastrar o cabeleireiro!")
+      Alert.alert("Erro", "Não foi possível cadastrar o corte!")
     });
   }
 
-  carregarListaCabeleireiros = () => {
-    var ref = database().ref("/leonbarbershop/cabeleireiros");
+  carregarListaCortes = () => {
+    var ref = database().ref("/leonbarbershop/cortes");
 
-    ref.orderByChild("nome").on("child_added", (snapshot) => {
-      this.setState({ 
-        arrayCabeleireiros : 
-          [...this.state.arrayCabeleireiros, ...[
-            {
-              id:snapshot.key,
-              nome:snapshot.child("nome").val(),
-              avaliacao:snapshot.child("avaliacao").val(),
-            }
-        ]] 
-        })
+    ref.orderByChild("titulo").on("child_added", (snapshot) => {
+        this.setState({ 
+            arrayCortes : 
+              [...this.state.arrayCortes, ...[
+                {
+                  id:snapshot.key,
+                  titulo:snapshot.child("titulo").val(),
+                  preco:snapshot.child("preco").val(),
+                  texto:snapshot.child("texto").val()
+                }
+            ]] 
+            })
         
     })
   }
 
   exibirOcultarModalEditar = (item) => {
-    this.setState({nomeCabeleireiro: item.nome})
-    this.setState({idCabeleireiro: item.id})
+    this.setState({tituloCorte: item.titulo})
+    this.setState({idCorte: item.id})
     this.setState({ verModalEditar: !this.state.verModalEditar });
   }
 
-  editarCabeleireiro = () => {
-    var ref = database().ref("/leonbarbershop/cabeleireiros/"+this.state.idCabeleireiro);
+  editarCorte = () => {
+    /*var ref = database().ref("/leonbarbershop/cabeleireiros/"+this.state.idCabeleireiro);
 
     ref.set({
       nome: this.state.inputNomeCabeleireiro
-    })
+    })*/
   }
 
-  excluirCabeleireiro = () => {
+  excluirCorte = () => {
 
   }
 
@@ -101,21 +110,21 @@ export default class GestaoCabeleireiros extends React.Component {
     return (
         <View style={estilos.viewTabs}>
           <FlatList
-            data={this.state.arrayCabeleireiros}
+            data={this.state.arrayCortes}
             renderItem={({ item }) => {
               return (
                 <View style={[estilos.itemArray, { backgroundColor: colors.corBranca }]}>
                   <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
                   <View style={{flexDirection:'column'}}>
-                    <Text style={estilos.title}>{item.nome}</Text>
-                    <Text style={estilos.textoNormalProduto}>{item.avaliacao}</Text>
+                    <Text style={estilos.title}>{item.titulo}</Text>
+                    <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
                   </View>
                   <View style={{flex: 1, flexDirection:"column", alignItems:"flex-end", justifyContent: "center", marginRight: 0}}>
                     <View style={{flexDirection:"row"}}>
                       <TouchableOpacity onPress={() => this.exibirOcultarModalEditar(item)}>
                         <Image source={require('../../imagens/icons/icon_edit_black.png')} style={{justifyContent: 'center', alignContent: 'center', marginRight: 10, height:30, width:30}}/>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => this.excluirCabeleireiro(item)}>
+                      <TouchableOpacity onPress={() => this.excluirCorte(item)}>
                         <Image source={require('../../imagens/icons/icon_delete.png')} style={{justifyContent: 'center', alignContent: 'center', marginBottom: 0, padding: 0, height:35, width:35}}/>
                       </TouchableOpacity>
                     </View>
@@ -125,18 +134,33 @@ export default class GestaoCabeleireiros extends React.Component {
             }}
             keyExtractor={item => item.id}
           />
+          
             <Modal isVisible={this.state.verModal} onRequestClose={this.exibirOcultarModal}>
               <View style={{ flex: 1, justifyContent:"center"}}>
-                <Text style={estilos.textLoginInicial}>Novo cabeleireiro</Text>
+                <Text style={estilos.textLoginInicial}>Novo corte</Text>
                 <TextInput
-                  onChangeText={(text) => this.setState({inputNome: text})}
+                  onChangeText={(text) => this.setState({inputTitulo: text})}
                   blurOnSubmit={false} 
                   style={estilos.textLoginInput} 
                   keyboardType='name-phone-pad' 
                   placeholder='Nome...' 
                   textContentType='name'>
                 </TextInput>
-                <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.salvarCabeleireiro} >
+                <TextInput
+                  onChangeText={(text) => this.setState({inputTexto: text})}
+                  blurOnSubmit={false} 
+                  style={estilos.textLoginInput} 
+                  keyboardType='name-phone-pad' 
+                  placeholder='Texto...' 
+                  textContentType='name'>
+                </TextInput>
+                <TextInput
+                  onChangeText={(text) => this.setState({inputPreco: text})}
+                  style={estilos.textLoginInput} 
+                  keyboardType='numeric' 
+                  placeholder='Preço...' >
+                </TextInput>
+                <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.salvarCorte} >
                   <Text style={estilos.textLoginCadastro}>Salvar</Text>
                 </TouchableOpacity>
 
@@ -149,16 +173,16 @@ export default class GestaoCabeleireiros extends React.Component {
 
             <Modal isVisible={this.state.verModalEditar} onRequestClose={this.exibirOcultarModalEditar}>
               <View style={{ flex: 1, justifyContent:"center"}}>
-                <Text style={estilos.textLoginInicial}>{this.state.nomeCabeleireiro}</Text>
+                <Text style={estilos.textLoginInicial}>{this.state.tituloCorte}</Text>
                   <TextInput
-                    onChangeText={(text) => this.setState({inputNomeCabeleireiro: text})}
+                    onChangeText={(text) => this.setState({inputTituloEditar: text})}
                     blurOnSubmit={false} 
                     style={estilos.textLoginInput} 
                     keyboardType='name-phone-pad' 
                     placeholder='Nome...' 
-                    textContentType='name'>{this.state.nomeCabeleireiro}
+                    textContentType='name'>{this.state.tituloCorte}
                   </TextInput>
-                  <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.editarCabeleireiro}>
+                  <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.editarCorte}>
                     <Text style={estilos.textLoginCadastro}>Alterar</Text>
                   </TouchableOpacity>
 

@@ -26,18 +26,16 @@ export default class ListViewAgendaCabeleireiros extends React.Component {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
 
     ref.orderByChild("nome").on("child_added", (snapshot) => {
-      snapshot.forEach((data) => {  
-          this.setState({ 
-            arrayCabeleireiros : 
-              [...this.state.arrayCabeleireiros, ...[
-                {
-                  id:snapshot.key,
-                  nome:data.val(),
-                  avaliacao:"avaliação"
-                }
-            ]] 
-            })
-      });
+      this.setState({ 
+        arrayCabeleireiros : 
+          [...this.state.arrayCabeleireiros, ...[
+            {
+              id:snapshot.key,
+              nome:snapshot.child("nome").val(),
+              avaliacao:snapshot.child("avaliacao").val(),
+            }
+        ]] 
+        })
         
     })
 

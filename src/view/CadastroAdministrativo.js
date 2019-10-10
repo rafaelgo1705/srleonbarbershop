@@ -13,6 +13,10 @@ export default class CadastroAdministrativo extends React.Component {
     this.props.navigation.navigate("GestaoCabeleireiros");
   }
 
+  abrirTelaGestaoCortes = () => {
+    this.props.navigation.navigate("GestaoCortes");
+  }
+
   render() {
     return (
       <ScrollView contentContainerStyle={estilos.scrollViewLogin}>
@@ -25,7 +29,7 @@ export default class CadastroAdministrativo extends React.Component {
           <TouchableOpacity onPress={this.abrirTelaGestaoCabeleireiros} style={estilos.buttonCadastroAgenda}>
             <Text style={estilos.buttonLoginTexto} >Cadastrar cabeleireiros</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={estilos.buttonCadastroAgenda}>
+          <TouchableOpacity onPress={this.abrirTelaGestaoCortes} style={estilos.buttonCadastroAgenda}>
             <Text style={estilos.buttonLoginTexto} >Cadastrar cortes</Text>
           </TouchableOpacity>
 

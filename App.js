@@ -22,6 +22,7 @@ import EditarConta from './src/view/EditarConta';
 import PainelAdministrativo from './src/view/PainelAdministrativo';
 import CadastroAdministrativo from './src/view/CadastroAdministrativo';
 import GestaoCabeleireiros from './src/view/painelcadastros/GestaoCabeleireiros';
+import GestaoCortes from './src/view/painelcadastros/GestaoCortes';
 
 const AppCreateBottomTabNavigator = createBottomTabNavigator({
   Home,
@@ -101,6 +102,7 @@ const AppCreateSwitchNavigator = createSwitchNavigator ({
   TabPainel: {screen: AppCreateBottomTabNavigatorPainel},
 
   GestaoCabeleireiros: {screen: GestaoCabeleireiros},
+  GestaoCortes:{screen:GestaoCortes},
 },{
   initialRouteName: 'SplashScreen'
 })
