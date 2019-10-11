@@ -29,7 +29,7 @@ export default class Agenda extends React.Component {
               <Image source={require('../../imagens/logo.png')} style={{marginTop: -10, marginBottom: -20, padding: 0, height:170, width:170}}></Image>
               <Text style={estilos.textoTitulo}>Sr. León Barber Shop</Text>
             </View>
-            <ListViewAgendaCabeleireiros/>
+            <ListViewAgendaCortes/>
           </ScrollView>
           <View style={{ justifyContent: 'flex-end'}}>
           <TouchableOpacity style={estilos.buttonAgendar}>

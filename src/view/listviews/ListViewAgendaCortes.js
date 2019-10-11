@@ -1,8 +1,10 @@
 import React from 'react';
-import {SafeAreaView, TouchableOpacity, FlatList, StyleSheet, Text, Image, View} from 'react-native';
+import {TouchableOpacity, FlatList, Text, Image, View} from 'react-native';
 
 import colors from '../../styles/colors';
 import estilos from '../../styles/estilos';
+
+import database from '@react-native-firebase/database';
 
 export default class ListViewAgendaCortes extends React.Component {
   constructor(props){
@@ -23,22 +25,20 @@ export default class ListViewAgendaCortes extends React.Component {
   }
 
   carregarListaCortes() {
-    var ref = database().ref("/leonbarbershop/cabeleireiros");
+    var ref = database().ref("/leonbarbershop/cortes");
 
-    ref.orderByChild("nome").on("child_added", (snapshot) => {
-      snapshot.forEach((data) => {  
-          this.setState({ 
-            arrayCortes : 
-              [...this.state.arrayCortes, ...[
-                {
-                  id:snapshot.key,
-                  titulo:data.val(),
-                  texto: data.val(),
-                  preco:"15"
-                }
-            ]] 
-            })
-      });
+    ref.orderByChild("titulo").on("child_added", (snapshot) => {
+      this.setState({ 
+        arrayCortes : 
+          [...this.state.arrayCortes, ...[
+            {   
+              id:snapshot.key,
+              titulo:snapshot.child("titulo").val(),
+              preco:snapshot.child("preco").val(),
+              texto:snapshot.child("texto").val()
+            }
+        ]] 
+        })
         
     })
 
@@ -50,6 +50,7 @@ export default class ListViewAgendaCortes extends React.Component {
         <FlatList
           data={this.state.arrayCortes}
           renderItem={({ item }) => {
+            return (
               <TouchableOpacity
                 style={[
                   estilos.itemArray,
@@ -61,10 +62,10 @@ export default class ListViewAgendaCortes extends React.Component {
                   <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
                 </View>
                 <View style={estilos.estiloPreco}>
-                  <Text style={estilos.textoPreco}>{item.preco}</Text>
+                  <Text style={estilos.textoPreco}>{"R$ " + item.preco}</Text>
                 </View>
               </TouchableOpacity>
-            
+            )
           }}
           keyExtractor={item => item.id}
         />

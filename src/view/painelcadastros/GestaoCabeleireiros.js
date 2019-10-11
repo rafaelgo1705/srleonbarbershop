@@ -5,7 +5,6 @@ import Modal from "react-native-modal";
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import database from '@react-native-firebase/database';
 
@@ -50,6 +49,7 @@ export default class GestaoCabeleireiros extends React.Component {
 
     ref.push().set({
       nome: this.state.inputNome,
+      avaliacao: "Sem avaliação"
     }).then(() => {
       Alert.alert("Sucesso", "O cabeleireiro foi cadastrado!",
       [
@@ -63,6 +63,7 @@ export default class GestaoCabeleireiros extends React.Component {
 
   carregarListaCabeleireiros = () => {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
+    this.state.arrayCabeleireiros = []
 
     ref.orderByChild("nome").on("child_added", (snapshot) => {
       this.setState({ 
@@ -93,8 +94,25 @@ export default class GestaoCabeleireiros extends React.Component {
     })
   }
 
-  excluirCabeleireiro = () => {
+  excluirCabeleireiro = (item) => {
+    var ref = database().ref("/leonbarbershop/cabeleireiros/"+item.id);
+    Alert.alert("Apagar", "Deseja apagar o cabeleireiro " + item.nome + "?",
+        [
+            {
+                text: 'Não', onPress: () => 
+                console.log('Não pressed')
+            },
+            {
+                text: 'Sim', onPress: () => 
+                  ref.remove().then(() => {
+                    Alert.alert("Sucesso", "O cabeleireiro " +item.nome+ " foi apagado!")
+                    this.carregarListaCabeleireiros();
 
+                  }).catch((error) => {
+                    Alert.alert("Erro", "Não foi possível deletar "+item.nome)
+                  })
+            }
+        ]);
   }
 
   render() {

@@ -6,11 +6,19 @@ import auth from '@react-native-firebase/auth';
 
 import ContaController from '../../controller/tabs/ContaController';
 
+import database from '@react-native-firebase/database';
+
+import {Buffer} from 'buffer';
+
 export default class Conta extends React.Component {
   constructor(props) {
     super(props);
     this.contaController = new ContaController();
 
+    this.carregarDadosConta();
+  }
+
+  carregarDadosConta = () => {
     this.userProfile = auth().currentUser;
 
     this.state = {
@@ -19,6 +27,12 @@ export default class Conta extends React.Component {
       telefone: "+5564984792087",
       
     };
+    
+    var emBase64 = new Buffer(this.userProfile.email).toString('base64');
+    var deBase64 = new Buffer(emBase64, 'base64').toString('ascii');
+
+    console.log(emBase64)
+
   }
 
   editarConta = () => {

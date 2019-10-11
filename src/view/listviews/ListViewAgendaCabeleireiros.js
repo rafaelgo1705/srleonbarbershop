@@ -15,7 +15,7 @@ export default class ListViewAgendaCabeleireiros extends React.Component {
       nome: '',
       avaliacao: '',
     }
-
+    
   }
 
   componentDidMount(){

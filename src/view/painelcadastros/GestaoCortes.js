@@ -7,7 +7,6 @@ import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
 
 import database from '@react-native-firebase/database';
-
 export default class GestaoCortes extends React.Component {
   constructor(props){
     super(props);
@@ -21,6 +20,7 @@ export default class GestaoCortes extends React.Component {
       inputTituloEditar: "",
       inputPrecoEditar: "",
       inputTextoEditar: "",
+      verModalEditar: false,
 
       tituloCorte: "",
       idCorte: "",
@@ -49,6 +49,7 @@ export default class GestaoCortes extends React.Component {
 
   exibirOcultarModal = () => {
     this.setState({ verModal: !this.state.verModal });
+    
   };
 
   salvarCorte = () => {
@@ -63,6 +64,7 @@ export default class GestaoCortes extends React.Component {
       [
         {text: 'Ok', onPress: this.exibirOcultarModal}
       ])
+      this.carregarListaCortes();
       
     }).catch(function(){
       Alert.alert("Erro", "Não foi possível cadastrar o corte!")
@@ -71,9 +73,10 @@ export default class GestaoCortes extends React.Component {
 
   carregarListaCortes = () => {
     var ref = database().ref("/leonbarbershop/cortes");
+    this.state.arrayCortes = []
 
     ref.orderByChild("titulo").on("child_added", (snapshot) => {
-        this.setState({ 
+        this.setState({
             arrayCortes : 
               [...this.state.arrayCortes, ...[
                 {
@@ -89,21 +92,43 @@ export default class GestaoCortes extends React.Component {
   }
 
   exibirOcultarModalEditar = (item) => {
-    this.setState({tituloCorte: item.titulo})
+    this.setState({inputTituloEditar: item.titulo})
+    this.setState({inputTextoEditar: item.texto})
+    this.setState({inputPrecoEditar: item.preco})
     this.setState({idCorte: item.id})
     this.setState({ verModalEditar: !this.state.verModalEditar });
   }
 
   editarCorte = () => {
-    /*var ref = database().ref("/leonbarbershop/cabeleireiros/"+this.state.idCabeleireiro);
+    var ref = database().ref("/leonbarbershop/cortes/"+this.state.idCorte);
 
     ref.set({
-      nome: this.state.inputNomeCabeleireiro
-    })*/
+      titulo:this.state.inputTituloEditar,
+      preco:this.state.inputPrecoEditar,
+      texto:this.state.inputTextoEditar,
+    })
+    this.carregarListaCortes()
   }
 
-  excluirCorte = () => {
+  excluirCorte = (item) => {
+    var ref = database().ref("/leonbarbershop/cortes/"+item.id);
+    Alert.alert("Apagar", "Deseja apagar o corte " +item.titulo+" na "+item.texto+ "?",
+        [
+            {
+                text: 'Não', onPress: () => 
+                console.log('Não pressed')
+            },
+            {
+                text: 'Sim', onPress: () => 
+                  ref.remove().then(() => {
+                    Alert.alert("Sucesso", "O corte " +item.titulo+ " foi apagado!")
+                    this.carregarListaCortes();
 
+                  }).catch((error) => {
+                    Alert.alert("Erro", "Não foi possível deletar "+item.titulo)
+                  })
+            }
+        ]);
   }
 
   render() {
@@ -174,14 +199,28 @@ export default class GestaoCortes extends React.Component {
             <Modal isVisible={this.state.verModalEditar} onRequestClose={this.exibirOcultarModalEditar}>
               <View style={{ flex: 1, justifyContent:"center"}}>
                 <Text style={estilos.textLoginInicial}>{this.state.tituloCorte}</Text>
-                  <TextInput
-                    onChangeText={(text) => this.setState({inputTituloEditar: text})}
-                    blurOnSubmit={false} 
-                    style={estilos.textLoginInput} 
-                    keyboardType='name-phone-pad' 
-                    placeholder='Nome...' 
-                    textContentType='name'>{this.state.tituloCorte}
-                  </TextInput>
+                <TextInput
+                  onChangeText={(text) => this.setState({inputTituloEditar: text})}
+                  blurOnSubmit={false} 
+                  style={estilos.textLoginInput} 
+                  keyboardType='name-phone-pad' 
+                  placeholder='Nome...' 
+                  textContentType='name'>{this.state.inputTituloEditar}
+                </TextInput>
+                <TextInput
+                  onChangeText={(text) => this.setState({inputTextoEditar: text})}
+                  blurOnSubmit={false} 
+                  style={estilos.textLoginInput} 
+                  keyboardType='name-phone-pad' 
+                  placeholder='Texto...' 
+                  textContentType='name'>{this.state.inputTextoEditar}
+                </TextInput>
+                <TextInput
+                  onChangeText={(text) => this.setState({inputPrecoEditar: text})}
+                  style={estilos.textLoginInput} 
+                  keyboardType='numeric' 
+                  placeholder='Preço...' >{this.state.inputPrecoEditar}
+                </TextInput>
                   <TouchableOpacity style={estilos.buttonCadastoCabeleireiro} onPress={this.editarCorte}>
                     <Text style={estilos.textLoginCadastro}>Alterar</Text>
                   </TouchableOpacity>
