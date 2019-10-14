@@ -8,12 +8,16 @@ import ContaController from '../../controller/tabs/ContaController';
 
 import database from '@react-native-firebase/database';
 
-import {Buffer} from 'buffer';
+import Base64 from '../../base64/Base64';
 
 export default class Conta extends React.Component {
   constructor(props) {
     super(props);
     this.contaController = new ContaController();
+
+    this.state = {
+      perfil: '',
+    }
 
     this.carregarDadosConta();
   }
@@ -24,15 +28,28 @@ export default class Conta extends React.Component {
     this.state = {
       nome: this.userProfile.displayName,
       email: this.userProfile.email,
-      telefone: "+5564984792087",
+      telefone: "",
       
     };
-    
-    var emBase64 = new Buffer(this.userProfile.email).toString('base64');
-    var deBase64 = new Buffer(emBase64, 'base64').toString('ascii');
 
-    console.log(emBase64)
+    var ref = database().ref("/leonbarbershop/usuarios/"+new Base64().codificarBase64(this.userProfile.email));
 
+    ref.on("value", (snapshot) => {
+      this.setState({perfil:snapshot.child("perfil").val()})
+      this.setState({telefone:snapshot.child("telefone").val()})
+    });
+  }
+
+  verificarPerfil() {
+    if(this.state.perfil == "administrador"){
+      return(
+        <TouchableOpacity onPress={this.painelAdministrativo} style={estilos.buttonPainelConta}>
+          <Text style={estilos.buttonExcluirContaTexto} >Painel</Text>
+        </TouchableOpacity>
+      );     
+    }else{
+
+    }
   }
 
   editarConta = () => {
@@ -99,9 +116,7 @@ export default class Conta extends React.Component {
                 <TouchableOpacity onPress={this.sair}><Text style={estilos.sairContaTab}> Sair do App</Text></TouchableOpacity>
               </View>
               <View style={{flex: 1, justifyContent: 'flex-end', marginHorizontal: 20}}>
-                <TouchableOpacity onPress={this.painelAdministrativo} style={estilos.buttonPainelConta}>
-                  <Text style={estilos.buttonExcluirContaTexto} >Painel</Text>
-                </TouchableOpacity>
+                {this.verificarPerfil()}
                 <TouchableOpacity onPress={this.excluirConta} style={estilos.buttonExcluirConta}>
                   <Text style={estilos.buttonExcluirContaTexto} >Excluir conta</Text>
                 </TouchableOpacity>  

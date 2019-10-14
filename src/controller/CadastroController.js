@@ -3,6 +3,8 @@ import {Alert} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import analytics from '@react-native-firebase/analytics';
 import ConfigFirebase from '../database/ConfigFirebase';
+import database from '@react-native-firebase/database';
+import Base64 from '../base64/Base64';
 
 export default class CadastroController {
     //cadastrar usuário no firebase
@@ -21,12 +23,11 @@ export default class CadastroController {
                         Alert.alert("Erro", "Não foi possível criar o perfil!");
                     });
 
-                    auth().currentUser.updatePhoneNumber(String.toString(telefone)).then(function(){
-
-                    }).catch(function(error){
-                        console.error("Impossível adicionar número de telefone");
-                    });
-                    Alert.alert("Sucesso", nome + "\n" + telefone + "\n");
+                   var ref = database().ref("/leonbarbershop/usuarios/"+ new Base64().codificarBase64(email));
+                   ref.set({
+                       perfil: "normal",
+                       telefone: telefone,
+                   });
             
                 }).catch(function(error) {
                     var errorCode = error.code;

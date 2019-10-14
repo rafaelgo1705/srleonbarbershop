@@ -50,6 +50,7 @@ export default class GestaoCabeleireiros extends React.Component {
     ref.push().set({
       nome: this.state.inputNome,
       avaliacao: "Sem avaliação"
+      
     }).then(() => {
       Alert.alert("Sucesso", "O cabeleireiro foi cadastrado!",
       [
@@ -188,7 +189,7 @@ export default class GestaoCabeleireiros extends React.Component {
 
           <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
 
-          <ActionButton position="left" buttonColor={colors.corButtonLogin} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
+          <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
         </View>
     );
   }

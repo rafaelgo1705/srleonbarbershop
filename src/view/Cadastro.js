@@ -100,7 +100,9 @@ export default class Cadastro extends React.Component {
 
         <View style={estilos.buttonCadastro}>
           <Text style={estilos.textLoginCadastro}>Já possui uma conta?</Text>
-          <Text style={estilos.textLoginCadastroEvento} onPress={()=> this.props.navigation.navigate('Login')}>Faça login</Text>
+          <TouchableOpacity onPress={()=> this.props.navigation.navigate('Login')}>
+            <Text style={estilos.textLoginCadastroEvento} >Faça login</Text>
+          </TouchableOpacity>
         </View>
         
         <Text style={estilos.textLoginOpcaoCadastro}>Ou cadastre-se com</Text>

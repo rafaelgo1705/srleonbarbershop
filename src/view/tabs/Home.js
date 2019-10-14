@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Image, Text, Alert, StatusBar, ScrollView} from 'react-native';
+import {View, Image, Text, StatusBar, ScrollView} from 'react-native';
 import colors from '../../styles/colors';
 import estilos from '../../styles/estilos';
 

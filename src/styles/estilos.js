@@ -417,6 +417,12 @@ const estilos = {
         backgroundColor: colors.corBranca,
     },
 
+    viewTabsAdmin: {
+        flex: 1,
+        marginBottom: 70,
+        backgroundColor: colors.corBranca,
+    },
+
     /**Tela Redefinir Senha */
     buttonRedefinirSenhaAlterar: {
         backgroundColor: colors.corButtonLogin,

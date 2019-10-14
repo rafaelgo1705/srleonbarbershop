@@ -7,6 +7,7 @@ import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
 
 import database from '@react-native-firebase/database';
+import { ScrollView } from 'react-native-gesture-handler';
 export default class GestaoCortes extends React.Component {
   constructor(props){
     super(props);
@@ -106,8 +107,16 @@ export default class GestaoCortes extends React.Component {
       titulo:this.state.inputTituloEditar,
       preco:this.state.inputPrecoEditar,
       texto:this.state.inputTextoEditar,
+    }).then(() => {
+      Alert.alert("Sucesso", "O corte foi alterado!",[
+        {
+          text:"Ok", onPress: () => {
+            this.setState({ verModalEditar: !this.state.verModalEditar })
+            this.carregarListaCortes()
+          }   
+        }
+      ])
     })
-    this.carregarListaCortes()
   }
 
   excluirCorte = (item) => {
@@ -141,7 +150,7 @@ export default class GestaoCortes extends React.Component {
                 <View style={[estilos.itemArray, { backgroundColor: colors.corBranca }]}>
                   <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
                   <View style={{flexDirection:'column'}}>
-                    <Text style={estilos.title}>{item.titulo}</Text>
+                    <Text style={estilos.title}>{item.titulo + " | R$ " + item.preco + ",00"}</Text>
                     <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
                   </View>
                   <View style={{flex: 1, flexDirection:"column", alignItems:"flex-end", justifyContent: "center", marginRight: 0}}>
@@ -229,11 +238,11 @@ export default class GestaoCortes extends React.Component {
                     <Text style={estilos.textLoginCadastro}>Cancelar</Text>
                   </TouchableOpacity>      
               </View>
-            </Modal>
-
-          <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
-
-          <ActionButton position="left" buttonColor={colors.corButtonLogin} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
+            </Modal>  
+            <View style={{color:colors.corBranca, flex: 1}}>
+              <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
+              <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>
+            </View>       
         </View>
     );
   }
