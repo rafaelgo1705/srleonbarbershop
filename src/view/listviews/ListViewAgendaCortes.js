@@ -1,10 +1,12 @@
 import React from 'react';
-import {TouchableOpacity, FlatList, Text, Image, View} from 'react-native';
+import {TouchableOpacity, Alert, FlatList, Text, Image, View} from 'react-native';
 
 import colors from '../../styles/colors';
 import estilos from '../../styles/estilos';
 
 import database from '@react-native-firebase/database';
+import ListViewAgendaCabeleireiros from './ListViewAgendaCabeleireiros';
+import Agenda from '../tabs/Agenda';
 
 export default class ListViewAgendaCortes extends React.Component {
   constructor(props){
@@ -44,14 +46,30 @@ export default class ListViewAgendaCortes extends React.Component {
 
   }
 
+  escolherCabeleireiro = (item) => {
+    let arrayAgenda = [];
+    arrayAgenda = [item]
+    this.agenda = new Agenda();
+
+    this.agenda.state = {
+      arrayAgenda:arrayAgenda
+    }
+
+    this.agenda.proximaTela()
+
+    console.log(this.agenda.state.arrayAgenda)
+  }
+
   render() {
     return (
       <View >
+        <Text>Selecione o corte</Text>
         <FlatList
           data={this.state.arrayCortes}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
+                onPress={() => this.escolherCabeleireiro(item)}
                 style={[
                   estilos.itemArray,
                   { backgroundColor: colors.corBranca },

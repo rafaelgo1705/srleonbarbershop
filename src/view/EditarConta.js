@@ -7,6 +7,10 @@ import estilos from '../styles/estilos';
 
 import EditarContaController from '../controller/EditarContaController';
 
+import database from '@react-native-firebase/database';
+
+import Base64 from '../base64/Base64';
+
 export default class EditarConta extends React.Component {
   constructor(props){
     super(props);
@@ -16,7 +20,16 @@ export default class EditarConta extends React.Component {
     this.state = {
       nome : this.userProfile.displayName,
       email : this.userProfile.email,
+      perfil: "",
+      telefone: "",
     }
+
+    var ref = database().ref("/leonbarbershop/usuarios/"+new Base64().codificarBase64(this.userProfile.email));
+
+    ref.on("value", (snapshot) => {
+      this.setState({perfil:snapshot.child("perfil").val()})
+      this.setState({telefone:snapshot.child("telefone").val()})
+    });
 
     this.editarContaController = new EditarContaController();
   }
@@ -75,7 +88,7 @@ export default class EditarConta extends React.Component {
                 style={estilos.textLoginInput} 
                 keyboardType='phone-pad' 
                 placeholder='Telefone...' 
-                textContentType='telephoneNumber'>
+                textContentType='telephoneNumber'>{this.state.telefone}
             </TextInput>
             
             <TouchableOpacity onPress={this.alterarDados} style={estilos.buttonRedefinirSenhaAlterar}>

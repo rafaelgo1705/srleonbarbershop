@@ -143,6 +143,7 @@ export default class GestaoCortes extends React.Component {
   render() {
     return (
         <View style={estilos.viewTabs}>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <FlatList
             data={this.state.arrayCortes}
             renderItem={({ item }) => {
@@ -168,6 +169,7 @@ export default class GestaoCortes extends React.Component {
             }}
             keyExtractor={item => item.id}
           />
+          </ScrollView>
           
             <Modal isVisible={this.state.verModal} onRequestClose={this.exibirOcultarModal}>
               <View style={{ flex: 1, justifyContent:"center"}}>
@@ -239,10 +241,8 @@ export default class GestaoCortes extends React.Component {
                   </TouchableOpacity>      
               </View>
             </Modal>  
-            <View style={{color:colors.corBranca, flex: 1}}>
-              <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
-              <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>
-            </View>       
+            <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
+            <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>
         </View>
     );
   }

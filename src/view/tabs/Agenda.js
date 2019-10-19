@@ -15,10 +15,26 @@ export default class Agenda extends React.Component {
     this.state = {text: "", inputNome: ""}
 
     this.agendaController = new AgendaController();
+
+    this.state = {
+      arrayAgenda: []
+    }
   }
 
   salvarAgenda = () => {
     this.agendaController.salvarAgendamento(this.props, this.state.inputNome);
+  }
+
+  proximaTela(){
+    if(this.state.arrayAgenda.length == 0){
+      return(
+        <ListViewAgendaCortes/>
+      );
+    }else{
+      return(
+        <ListViewAgendaCabeleireiros/>
+      );
+    }
   }
   
     render() {
@@ -29,11 +45,16 @@ export default class Agenda extends React.Component {
               <Image source={require('../../imagens/logo.png')} style={{marginTop: -10, marginBottom: -20, padding: 0, height:170, width:170}}></Image>
               <Text style={estilos.textoTitulo}>Sr. León Barber Shop</Text>
             </View>
-            <ListViewAgendaCortes/>
+            <View>
+              <ListViewAgendaCortes/>
+            </View>
+            <View>
+              <ListViewAgendaCabeleireiros/>
+            </View>
           </ScrollView>
           <View style={{ justifyContent: 'flex-end'}}>
           <TouchableOpacity style={estilos.buttonAgendar}>
-              <Text style={estilos.textoNegritoConta}>Próximo (R$)</Text>
+              <Text style={estilos.textoNegritoConta}>Próximo</Text>
           </TouchableOpacity>
         </View>
       </View>
