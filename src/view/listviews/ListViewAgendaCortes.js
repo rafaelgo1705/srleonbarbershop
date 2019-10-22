@@ -46,30 +46,24 @@ export default class ListViewAgendaCortes extends React.Component {
 
   }
 
-  escolherCabeleireiro = (item) => {
-    let arrayAgenda = [];
-    arrayAgenda = [item]
+  escolherCorte = (item) => {
+    let corte = [];
+    corte = [item]
+
     this.agenda = new Agenda();
-
-    this.agenda.state = {
-      arrayAgenda:arrayAgenda
-    }
-
-    this.agenda.proximaTela()
-
-    console.log(this.agenda.state.arrayAgenda)
+    this.agenda.mudarTela(corte, false)
   }
 
   render() {
     return (
       <View >
-        <Text>Selecione o corte</Text>
+        <Text style={estilos.textoNegritoAgenda}>Selecione o corte</Text>
         <FlatList
           data={this.state.arrayCortes}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
-                onPress={() => this.escolherCabeleireiro(item)}
+                onPress={() => this.escolherCorte(item)}
                 style={[
                   estilos.itemArray,
                   { backgroundColor: colors.corBranca },

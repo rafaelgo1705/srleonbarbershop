@@ -3,7 +3,7 @@ import {Alert} from 'react-native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 
-export default class ContaController {
+export default class AgendaController {
     salvarAgendamento(proper, nome){
         const uid = auth().currentUser.uid;
 

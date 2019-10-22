@@ -17,24 +17,24 @@ export default class Agenda extends React.Component {
     this.agendaController = new AgendaController();
 
     this.state = {
-      arrayAgenda: []
+      corte: [],
+      cabeleireiro: [],
+      data: '',
+      horario: '',
+      statusCorte: true,
+      statusCabeleireiro: false,
     }
+  }
+
+  mudarTela = (corte, statusCorte) => {
+    this.setState({
+      statusCorte:!this.state.statusCorte
+    })
+    console.log(corte + " | Status: " +statusCorte)
   }
 
   salvarAgenda = () => {
     this.agendaController.salvarAgendamento(this.props, this.state.inputNome);
-  }
-
-  proximaTela(){
-    if(this.state.arrayAgenda.length == 0){
-      return(
-        <ListViewAgendaCortes/>
-      );
-    }else{
-      return(
-        <ListViewAgendaCabeleireiros/>
-      );
-    }
   }
   
     render() {
@@ -45,12 +45,9 @@ export default class Agenda extends React.Component {
               <Image source={require('../../imagens/logo.png')} style={{marginTop: -10, marginBottom: -20, padding: 0, height:170, width:170}}></Image>
               <Text style={estilos.textoTitulo}>Sr. León Barber Shop</Text>
             </View>
-            <View>
-              <ListViewAgendaCortes/>
-            </View>
-            <View>
-              <ListViewAgendaCabeleireiros/>
-            </View>
+            {this.state.statusCorte ? <ListViewAgendaCortes/> : null}
+            {this.state.statusCabeleireiro ? <ListViewAgendaCabeleireiros/> : null}
+
           </ScrollView>
           <View style={{ justifyContent: 'flex-end'}}>
           <TouchableOpacity style={estilos.buttonAgendar}>
