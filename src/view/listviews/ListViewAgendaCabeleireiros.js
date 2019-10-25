@@ -11,7 +11,6 @@ export default class ListViewAgendaCabeleireiros extends React.Component {
     super(props);
 
     this.state = {
-      arrayAgenda: [],
       arrayCabeleireiros: [],
       nome: '',
       avaliacao: '',
