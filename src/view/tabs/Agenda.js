@@ -6,10 +6,9 @@ import colors from '../../styles/colors';
 
 import AgendaController from '../../controller/tabs/AgendaController';
 
-import ListViewAgendaCortes from '../listviews/ListViewAgendaCortes';
-import ListViewAgendaCabeleireiros from '../listviews/ListViewAgendaCabeleireiros';
-
 import database from '@react-native-firebase/database';
+
+import {Calendar, CalendarList} from 'react-native-calendars';
 
 export default class Agenda extends React.Component {
   constructor(props){
@@ -39,6 +38,10 @@ export default class Agenda extends React.Component {
       titulo: '',
       texto:'',
       preco: '',
+
+      //ArrayAgenda
+      idCorteAgenda: '',
+      idCabeleireiroAgenda: ''
     }
   }
 
@@ -48,15 +51,21 @@ export default class Agenda extends React.Component {
   }
 
   mudarTela = (idCorte, verTela) => {
-    //console.log("idCorte: " +idCorte)
+    console.log("idCorte: " +idCorte)
 
     if(verTela == 0){
       this.carregarListaCortes();
       this.setState({verTela:0})
 
     }else if(verTela == 1){
-      this.carregarListaCabeleireiros(idCorte);
-      this.setState({verTela:1})
+        idCorte = this.state.idCorteAgenda
+        this.setState({idCorteAgenda:idCorte})   
+        this.carregarListaCabeleireiros(this.state.idCorteAgenda);
+        this.setState({verTela:1})
+  
+    }else if(verTela == 2){
+      this.setState({verTela:2})
+
     }else{
       return null;
     }
@@ -108,6 +117,7 @@ export default class Agenda extends React.Component {
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
+                onPress={() => this.mudarTela("", 2)}
                 style={[
                   estilos.itemArray,
                   { backgroundColor: colors.corBranca },
@@ -128,7 +138,17 @@ export default class Agenda extends React.Component {
   }
 
   telaData = () => {
-    
+    return (
+      <View >
+        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+          <TouchableOpacity onPress={() => this.mudarTela(this.state.idCorteAgenda, 1)}>
+            <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
+          </TouchableOpacity>
+          <Text style={estilos.textoNegritoAgenda}>Selecione a data</Text>
+        </View>
+        <Calendar/>
+      </View>
+    );
   }
 
   salvarAgenda = () => {
@@ -187,6 +207,7 @@ export default class Agenda extends React.Component {
             <View>
               {this.state.verTela == 0 ? this.telaCortes() : null}
               {this.state.verTela == 1 ? this.telaCabeleireiros() : null}
+              {this.state.verTela == 2 ? this.telaData() : null}
             </View>
 
           </ScrollView>
