@@ -127,6 +127,10 @@ export default class Agenda extends React.Component {
     );
   }
 
+  telaData = () => {
+    
+  }
+
   salvarAgenda = () => {
     this.agendaController.salvarAgendamento(this.props, this.state.inputNome);
   }
@@ -156,22 +160,19 @@ export default class Agenda extends React.Component {
     var ref = database().ref("/leonbarbershop/cabeleireiros");
 
     ref.orderByChild("nome").on("child_added", (snapshot) => {
-      ref.child(snapshot.key).child("cortes").orderByChild("idCorte").on("child_added", (snap) => {
-        //console.log(idCorte, snap.child("idCorte"))
-        if(snap.child("idCorte") == idCorte){
-          console.log("Ta aqui!" + idCorte)
-        }
+      ref.child(snapshot.key).child("cortes").orderByChild("idCorte").equalTo(idCorte).on("child_added", (snap) => {
+        console.log(idCorte, snap.child("idCorte"))
+        this.setState({ 
+          arrayCabeleireiros : 
+            [...this.state.arrayCabeleireiros, ...[
+              {
+                id:snapshot.key,
+                nome:snapshot.child("nome").val(),
+                avaliacao:snapshot.child("avaliacao").val(),
+              }
+          ]] 
+          })
       })
-      /*this.setState({ 
-        arrayCabeleireiros : 
-          [...this.state.arrayCabeleireiros, ...[
-            {
-              id:snapshot.key,
-              nome:snapshot.child("nome").val(),
-              avaliacao:snapshot.child("avaliacao").val(),
-            }
-        ]] 
-        })*/
     })
   }
   
