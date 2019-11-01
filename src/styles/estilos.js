@@ -241,6 +241,60 @@ const estilos = {
     },
     /**Fim Tela Tab Agenda*/
 
+    /**Tela Resumo Agenda */
+    textoResumoAgendaPrincipal:{
+        paddingLeft: 10,
+        paddingTop: 5,
+        fontFamily: 'Segoe UI Emoji',
+        fontSize: 18,
+        color: colors.corPreta,
+        textAlign: 'left',
+        fontWeight: 'bold',
+        lineHeight: 28
+    },
+
+    textoResumoAgendaSecundario:{
+        paddingBottom: 7,
+        paddingTop: 2,
+        paddingHorizontal: 20,
+        fontFamily: 'Segoe UI Emoji',
+        fontSize: 18,
+        color: colors.corTextoNormal,
+        textAlign: 'left',
+        lineHeight: 28
+    },
+    /**Fim Tela Resumo Agenda */
+
+    inputTextTelaAgenda: {
+        marginVertical: 10,
+        fontSize: 16, 
+        borderWidth: 0.2,
+        borderRadius: 30,
+        paddingHorizontal: 20,
+        borderColor: colors.corInputText,
+        backgroundColor: colors.corBranca,
+    },
+
+    textoAgendaCliente: {
+        marginTop: 20,
+        marginBottom: 10,
+        color: colors.corTextoNormal,
+        fontSize: 18,
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+
+    buttonAgendaAdmin: {
+        backgroundColor: colors.corButtonLogin,
+        marginVertical: 15,
+        height: 45,
+        borderRadius: 30,
+        marginHorizontal: 10,
+        justifyContent:'center', 
+        alignItems:'center',
+        paddingHorizontal: 20
+    },
+
     /**Tela Tab Status*/
     viewSuperiorStatus: {
         padding: 20,
@@ -547,6 +601,7 @@ const estilos = {
     },
 
     /**Fim Tela cadastro agenda */
+    
 }
 
 export default estilos;

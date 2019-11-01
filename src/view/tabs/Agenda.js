@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, Text, Alert, FlatList, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Image, Text, TextInput, FlatList, ScrollView, TouchableOpacity} from 'react-native';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
@@ -8,7 +8,12 @@ import AgendaController from '../../controller/tabs/AgendaController';
 
 import database from '@react-native-firebase/database';
 
-import {Calendar, CalendarList} from 'react-native-calendars';
+import { CheckBox } from 'react-native-elements'
+import {Calendar} from 'react-native-calendars';
+
+import auth from '@react-native-firebase/auth';
+
+import Base64 from '../../base64/Base64';
 
 export default class Agenda extends React.Component {
   constructor(props){
@@ -39,36 +44,213 @@ export default class Agenda extends React.Component {
       texto:'',
       preco: '',
 
+      //Listar Horarios
+      arrayHorarios:[
+        {
+          id:"9",
+          hora:"09",
+          minuto:"00"
+        },
+        {
+          id:"10",
+          hora:"10",
+          minuto:"00"
+        },
+        {
+          id:"11",
+          hora:"11",
+          minuto:"00"
+        },
+        {
+          id:"12",
+          hora:"12",
+          minuto:"00"
+        },
+        {
+          id:"13",
+          hora:"13",
+          minuto:"00"
+        },
+        {
+          id:"14",
+          hora:"14",
+          minuto:"00"
+        },
+        {
+          id:"15",
+          hora:"15",
+          minuto:"00"
+        },
+        {
+          id:"16",
+          hora:"16",
+          minuto:"00"
+        },
+        {
+          id:"17",
+          hora:"17",
+          minuto:"00"
+        },
+        {
+          id:"18",
+          hora:"18",
+          minuto:"00"
+        },
+        {
+          id:"19",
+          hora:"19",
+          minuto:"00"
+        },
+        {
+          id:"20",
+          hora:"20",
+          minuto:"00"
+        },
+        {
+          id:"21",
+          hora:"21",
+          minuto:"00"
+        },
+        {
+          id:"22",
+          hora:"22",
+          minuto:"00"
+        },
+      ],
+
       //ArrayAgenda
+      //Informações Corte
       idCorteAgenda: '',
-      idCabeleireiroAgenda: ''
+      nomeCorte: '',
+      tipoCorte: '',
+      precoCorte: '',
+
+      //Informações Cabeleireiro
+      idCabeleireiroAgenda: '',
+      nomeCabeleireiro: '',
+
+      //Informações do dia
+      dia: '',
+      mes: '',
+      ano: '',
+      hora: '',
+      minuto: '',
+
+      paramim: true,
+      paraoutro: false,
+
+      //Informações do usuário
+      idUsuario: '',
+      perfilUsuario: '',
+      telefoneUsuario: '',
+      nomeUsuario: '',
     }
   }
 
   componentDidMount(){
     this.carregarListaCortes();
-    //this.carregarListaCabeleireiros();
+    this.carregarUsuario();
   }
 
-  mudarTela = (idCorte, verTela) => {
-    console.log("idCorte: " +idCorte)
+  carregarUsuario = () => {
+    const nomeUsuario = auth().currentUser.displayName;
+    const emailCliente = new Base64().codificarBase64(auth().currentUser.email) 
 
+    this.setState({
+      idUsuario: '',
+      perfilUsuario: '',
+      telefoneUsuario: '',
+      nomeUsuario: '',
+    })
+
+    var ref = database().ref(`/leonbarbershop/usuarios/${emailCliente}`);
+
+    ref.on("value", (snapshot) => {
+      this.setState({
+        idUsuario: emailCliente,
+        perfilUsuario: snapshot.child("perfil").val(),
+        telefoneUsuario: snapshot.child("telefone").val(),
+        nomeUsuario: nomeUsuario,
+      })
+    })
+  }
+
+  mudarTela = (verTela) => {
     if(verTela == 0){
       this.carregarListaCortes();
       this.setState({verTela:0})
 
     }else if(verTela == 1){
-        idCorte = this.state.idCorteAgenda
-        this.setState({idCorteAgenda:idCorte})   
-        this.carregarListaCabeleireiros(this.state.idCorteAgenda);
-        this.setState({verTela:1})
-  
+      this.carregarListaCabeleireiros(this.state.idCorteAgenda);
+      this.setState({verTela:1})
+
     }else if(verTela == 2){
       this.setState({verTela:2})
+
+    }else if(verTela == 3){
+      this.setState({verTela:3})
+
+    }else if(verTela == 4){
+      this.setState({verTela:4})
 
     }else{
       return null;
     }
+  }
+
+  _onPressCorte = (item) => {
+    this.setState({
+      idCorteAgenda:'',
+      nomeCorte:'',
+      precoCorte:'',
+      tipoCorte:''
+    })
+
+    this.setState({
+      idCorteAgenda:item.idCorte,
+      nomeCorte:item.titulo,
+      precoCorte:item.preco,
+      tipoCorte:item.texto
+    }, () => {this.mudarTela(1)})
+  }
+
+  _onPressCabeleireiro = (item) => {
+    this.setState({
+      idCabeleireiroAgenda:'',
+      nomeCabeleireiro:''
+    })
+    
+    this.setState({
+      idCabeleireiroAgenda:item.id,
+      nomeCabeleireiro:item.nome
+    }, () => {this.mudarTela(2)})
+  }
+
+  _onPressData = (date) => {
+    this.setState({
+      dia:'',
+      mes:'',
+      ano:'',
+    })
+
+    this.setState({
+      dia:date.day,
+      mes:date.month,
+      ano:date.year,
+    }, () => {this.mudarTela(3)})
+  }
+
+  _onPressHorario = (item) => {
+    this.setState({
+      hora:'',
+      minuto:'',
+    })
+
+    this.setState({
+      hora:item.hora,
+      minuto:item.minuto,
+    
+    }, () => {this.mudarTela(4)})
   }
 
   telaCortes(){
@@ -80,7 +262,9 @@ export default class Agenda extends React.Component {
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity
-                    onPress={() => this.mudarTela(item.idCorte, 1)}
+                    onPress={
+                      () => this._onPressCorte(item)
+                    }
                     style={[
                       estilos.itemArray,
                       { backgroundColor: colors.corBranca },
@@ -91,7 +275,7 @@ export default class Agenda extends React.Component {
                       <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
                     </View>
                     <View style={estilos.estiloPreco}>
-                      <Text style={estilos.textoPreco}>{"R$ " + item.preco}</Text>
+                      <Text style={estilos.textoPreco}>{"R$ " + item.preco + ",00"}</Text>
                     </View>
                   </TouchableOpacity>
                 )
@@ -106,7 +290,7 @@ export default class Agenda extends React.Component {
     return (
       <View >
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => this.mudarTela("", 0)}>
+          <TouchableOpacity onPress={() => this.mudarTela(0)}>
             <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
           </TouchableOpacity>
           <Text style={estilos.textoNegritoAgenda}>Selecione o cabeleireiro</Text>
@@ -117,7 +301,7 @@ export default class Agenda extends React.Component {
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
-                onPress={() => this.mudarTela("", 2)}
+                onPress={() => this._onPressCabeleireiro(item)}
                 style={[
                   estilos.itemArray,
                   { backgroundColor: colors.corBranca },
@@ -141,18 +325,155 @@ export default class Agenda extends React.Component {
     return (
       <View >
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => this.mudarTela(this.state.idCorteAgenda, 1)}>
+          <TouchableOpacity onPress={() => this.mudarTela(1)}>
             <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
           </TouchableOpacity>
           <Text style={estilos.textoNegritoAgenda}>Selecione a data</Text>
         </View>
-        <Calendar/>
+        <Calendar
+          onDayPress={(date) => {
+            this._onPressData(date)
+          }}
+        />
       </View>
     );
   }
 
-  salvarAgenda = () => {
-    this.agendaController.salvarAgendamento(this.props, this.state.inputNome);
+  telaHorario = () => {
+    return (
+      <View >
+        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+          <TouchableOpacity onPress={() => this.mudarTela(2)}>
+            <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
+          </TouchableOpacity>
+          <Text style={estilos.textoNegritoAgenda}>Selecione a hora</Text>
+        </View>
+          <FlatList
+            data={this.state.arrayHorarios}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => this._onPressHorario(item)}
+                  style={[
+                    estilos.itemArray,
+                    { backgroundColor: colors.corBranca },
+                  ]}
+                >
+                  <Text style={estilos.title}>{item.hora + ":" + item.minuto}</Text>
+                </TouchableOpacity>
+              ) 
+            }}
+            keyExtractor={item => item.id}
+          />
+      </View>
+    );
+  }
+
+  telaResumo = () => {
+    return (
+      <View >
+        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+          <TouchableOpacity onPress={() => this.mudarTela(3)}>
+            <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
+          </TouchableOpacity>
+          <Text style={estilos.textoNegritoAgenda}>Resumo</Text>
+        </View>
+        <View>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Corte:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeCorte}</Text>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Cabeleireiro:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeCabeleireiro}</Text>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Data:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.dia + "/" +this.state.mes + "/" + this.state.ano}</Text>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Horario:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.hora + ":" + this.state.minuto}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  telaResumoButton = () => {
+    return(
+      <View style={{ justifyContent: 'flex-end'}}>
+          <TouchableOpacity onPress={() => this.confirmarAgendamento()} style={estilos.buttonAgendar}>
+              <Text style={estilos.textoNegritoConta}>{"Agendar (R$ " + this.state.precoCorte + ",00)"}</Text>
+          </TouchableOpacity>
+        </View>
+    );
+  }
+
+  telaUsuarioAdmin = () => {
+    return (
+      <View >
+        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+          <TouchableOpacity onPress={() => this.mudarTela(3)}>
+            <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
+          </TouchableOpacity>
+          <Text style={estilos.textoNegritoAgenda}>Para quem é o corte?</Text>
+        </View>
+        <View>
+          <CheckBox
+            center
+            onPress={() => this.setState({paraoutro:false, paramim:true})}
+            title='Para mim'
+            checkedIcon='dot-circle-o'
+            uncheckedIcon='circle-o'
+            checked={this.state.paramim}
+          />
+          <CheckBox
+            center
+            onPress={() => this.setState({paraoutro:true, paramim:false})}
+            title='Cliente'
+            checkedIcon='dot-circle-o'
+            uncheckedIcon='circle-o'
+            checked={this.state.paraoutro}
+          />
+          <View style={{alignContent: 'center'}}>
+            {this.state.paraoutro == true ? this.carregarTelaCliente() : null}
+          </View>
+        </View>
+
+        <TouchableOpacity style={estilos.buttonAgendaAdmin}>
+              <Text style={estilos.textoNegritoConta}>{"Avançar"}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  carregarTelaCliente = () => {
+    return (
+      <View style={{alignContent: 'center', paddingHorizontal: 10}}>
+        <Text style={estilos.textoAgendaCliente}>Informações do cliente: </Text>
+
+        <TextInput 
+            onChangeText={(text) => this.setState({inputNome: text})}
+            style={estilos.inputTextTelaAgenda} 
+            blurOnSubmit={true}
+            keyboardType='name-phone-pad' 
+            placeholder='Nome...' 
+            textContentType='none'>
+          </TextInput>
+          <TextInput 
+            onChangeText={(text) => this.setState({inputTelefone: text})}
+            style={estilos.inputTextTelaAgenda} 
+            keyboardType='number-pad' 
+            placeholder='Telefone...' 
+            textContentType='none'>
+          </TextInput>
+      </View>
+    );
+  }
+
+  confirmarAgendamento = () => {
+    this.agendaController.salvarAgendamento(
+      this, 
+      this.state.idCorteAgenda,
+      this.state.nomeCorte,
+      this.state.precoCorte,
+      this.state.idCabeleireiroAgenda,
+      this.state.nomeCabeleireiro,
+      this.state.dia,
+      this.state.mes,
+      this.state.ano,
+      this.state.hora,
+      this.state.minuto,
+      );
   }
 
   carregarListaCortes() {
@@ -181,7 +502,6 @@ export default class Agenda extends React.Component {
 
     ref.orderByChild("nome").on("child_added", (snapshot) => {
       ref.child(snapshot.key).child("cortes").orderByChild("idCorte").equalTo(idCorte).on("child_added", (snap) => {
-        console.log(idCorte, snap.child("idCorte"))
         this.setState({ 
           arrayCabeleireiros : 
             [...this.state.arrayCabeleireiros, ...[
@@ -194,6 +514,50 @@ export default class Agenda extends React.Component {
           })
       })
     })
+  }
+
+  limparCampos = () => {
+    this.setState({
+      verTela: 0,
+      corte: [],
+      cabeleireiro: [],
+      data: '',
+      horario: '',
+
+      //Listar cabeleireiros
+      statusCabeleireiro: false,
+      arrayCabeleireiros: [],
+      nome: '',
+      avaliacao: '',
+
+      //Listrar Cortes
+      statusCorte: true,
+      arrayCortes: [],
+      id:'',
+      titulo: '',
+      texto:'',
+      preco: '',
+
+      //ArrayAgenda
+      //Informações Corte
+      idCorteAgenda: '',
+      nomeCorte: '',
+      tipoCorte: '',
+      precoCorte: '',
+
+      //Informações Cabeleireiro
+      idCabeleireiroAgenda: '',
+      nomeCabeleireiro: '',
+
+      //Informações do dia
+      dia: '',
+      mes: '',
+      ano: '',
+      hora: '',
+      minuto: '',
+    })
+
+    this.carregarListaCortes()
   }
   
     render() {
@@ -208,10 +572,15 @@ export default class Agenda extends React.Component {
               {this.state.verTela == 0 ? this.telaCortes() : null}
               {this.state.verTela == 1 ? this.telaCabeleireiros() : null}
               {this.state.verTela == 2 ? this.telaData() : null}
-            </View>
+              {this.state.verTela == 3 ? this.telaHorario() : null}
+              
+              {this.state.verTela == 4 ? this.telaResumo() : null}
 
+              {this.state.verTela == 5 ? this.telaUsuarioAdmin() : null}
+              
+            </View>
           </ScrollView>
-          
+          {this.state.verTela == 4 ? this.telaResumoButton() : null}
       </View>
       );
     }
