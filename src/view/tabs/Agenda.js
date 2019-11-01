@@ -193,6 +193,9 @@ export default class Agenda extends React.Component {
     }else if(verTela == 4){
       this.setState({verTela:4})
 
+    }else if(verTela == 5){
+      this.setState({verTela:5})
+
     }else{
       return null;
     }
@@ -241,16 +244,43 @@ export default class Agenda extends React.Component {
   }
 
   _onPressHorario = (item) => {
-    this.setState({
-      hora:'',
-      minuto:'',
-    })
+    if(this.state.perfilUsuario === "normal"){
+      this.setState({
+        hora:'',
+        minuto:'',
+      })
 
-    this.setState({
-      hora:item.hora,
-      minuto:item.minuto,
+      this.setState({
+        hora:item.hora,
+        minuto:item.minuto,
+      
+      }, () => {this.mudarTela(4)})
     
-    }, () => {this.mudarTela(4)})
+    }else if(this.state.perfilUsuario === "administrador"){
+      this.setState({
+        hora:'',
+        minuto:'',
+      })
+
+      this.setState({
+        hora:item.hora,
+        minuto:item.minuto,
+      
+      }, () => {this.mudarTela(5)})
+    }
+  }
+
+  _onPressAgendaAdmin = () => {
+    this.mudarTela(4)
+  }
+
+  _onPressVoltarResumo = () => {
+    if(this.state.perfilUsuario === "administrador"){
+      this.setState({verTela:5})
+    
+    }else if(this.state.perfilUsuario === "normal"){
+      this.setState({verTela:3})
+    }
   }
 
   telaCortes(){
@@ -373,7 +403,7 @@ export default class Agenda extends React.Component {
     return (
       <View >
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => this.mudarTela(3)}>
+          <TouchableOpacity onPress={() => this._onPressVoltarResumo()}>
             <Image style={{width: 30, height: 30, marginLeft: 5}} source={require('../../imagens/icons/icon_voltar_seta_black.png')}></Image>
           </TouchableOpacity>
           <Text style={estilos.textoNegritoAgenda}>Resumo</Text>
@@ -429,8 +459,8 @@ export default class Agenda extends React.Component {
           </View>
         </View>
 
-        <TouchableOpacity style={estilos.buttonAgendaAdmin}>
-              <Text style={estilos.textoNegritoConta}>{"Avançar"}</Text>
+        <TouchableOpacity onPress={() => this._onPressAgendaAdmin()} style={estilos.buttonAgendaAdmin}>
+          <Text style={estilos.textoNegritoConta}>{"Avançar"}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -473,6 +503,8 @@ export default class Agenda extends React.Component {
       this.state.ano,
       this.state.hora,
       this.state.minuto,
+      this.state.nomeUsuario,
+      this.state.idUsuario
       );
   }
 
