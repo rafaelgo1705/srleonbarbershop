@@ -23,9 +23,9 @@ export default class GestaoCabeleireiros extends React.Component {
       verModalEditar: false,
     };
 
-    this.state = ({
+    this.state = {
       arrayCabeleireiros: [],
-    })
+    }
 
     this.state = {
       verModalCortes:false,

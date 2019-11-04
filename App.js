@@ -23,6 +23,7 @@ import PainelAdministrativo from './src/view/PainelAdministrativo';
 import CadastroAdministrativo from './src/view/CadastroAdministrativo';
 import GestaoCabeleireiros from './src/view/painelcadastros/GestaoCabeleireiros';
 import GestaoCortes from './src/view/painelcadastros/GestaoCortes';
+import Agendamentos from './src/view/painelcadastros/Agendamentos';
 
 const AppCreateBottomTabNavigator = createBottomTabNavigator({
   Home,
@@ -103,6 +104,7 @@ const AppCreateSwitchNavigator = createSwitchNavigator ({
 
   GestaoCabeleireiros: {screen: GestaoCabeleireiros},
   GestaoCortes:{screen:GestaoCortes},
+  Agendamentos:{screen:Agendamentos},
 },{
   initialRouteName: 'SplashScreen'
 })

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, Text, TextInput, FlatList, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Image, Text, TextInput, FlatList, ScrollView, TouchableOpacity, Alert} from 'react-native';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
@@ -136,7 +136,7 @@ export default class Agenda extends React.Component {
       hora: '',
       minuto: '',
 
-      paramim: true,
+      paramim: false,
       paraoutro: false,
 
       //Informações do usuário
@@ -144,6 +144,8 @@ export default class Agenda extends React.Component {
       perfilUsuario: '',
       telefoneUsuario: '',
       nomeUsuario: '',
+      inputTelefone: '',
+      inputNome: '',
     }
   }
 
@@ -271,12 +273,31 @@ export default class Agenda extends React.Component {
   }
 
   _onPressAgendaAdmin = () => {
-    this.mudarTela(4)
+    if(this.state.paramim){
+      this.mudarTela(4)
+
+    }else if(this.state.paraoutro){
+      if(this.state.inputNome === "" || this.state.inputTelefone === ""){
+        Alert.alert("Erro", "Preencha todos os campos!")
+
+      }else{
+        this.mudarTela(4)
+      }
+
+    }else{
+      Alert.alert("Selecionar", "Marque uma opção!")
+    }
   }
 
   _onPressVoltarResumo = () => {
     if(this.state.perfilUsuario === "administrador"){
       this.setState({verTela:5})
+      this.setState({
+        paramim: false,
+        paraoutro: false,
+        inputNome: "",
+        inputTelefone: "",
+      })
     
     }else if(this.state.perfilUsuario === "normal"){
       this.setState({verTela:3})
@@ -413,9 +434,33 @@ export default class Agenda extends React.Component {
           <Text style={estilos.textoResumoAgendaPrincipal}>Cabeleireiro:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeCabeleireiro}</Text>
           <Text style={estilos.textoResumoAgendaPrincipal}>Data:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.dia + "/" +this.state.mes + "/" + this.state.ano}</Text>
           <Text style={estilos.textoResumoAgendaPrincipal}>Horario:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.hora + ":" + this.state.minuto}</Text>
+
+          {this.validarCliente()}
         </View>
       </View>
     );
+  }
+
+  validarCliente = () => {
+    if(this.state.paraoutro){
+      return(
+        <View>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Cliente:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.inputNome + " | " + this.state.inputTelefone}</Text>
+        </View>
+      );
+    }else if(this.state.paramim){
+      return(
+        <View>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Cliente:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeUsuario + " | " + this.state.telefoneUsuario}</Text>
+        </View>
+      );
+    }else{
+      return(
+        <View>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Cliente:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeUsuario + " | " + this.state.telefoneUsuario}</Text>
+        </View>
+      );
+    }
   }
 
   telaResumoButton = () => {
@@ -491,21 +536,59 @@ export default class Agenda extends React.Component {
   }
 
   confirmarAgendamento = () => {
-    this.agendaController.salvarAgendamento(
-      this, 
-      this.state.idCorteAgenda,
-      this.state.nomeCorte,
-      this.state.precoCorte,
-      this.state.idCabeleireiroAgenda,
-      this.state.nomeCabeleireiro,
-      this.state.dia,
-      this.state.mes,
-      this.state.ano,
-      this.state.hora,
-      this.state.minuto,
-      this.state.nomeUsuario,
-      this.state.idUsuario
+    if(this.state.paramim){
+      this.agendaController.salvarAgendamento(
+        this, 
+        this.state.idCorteAgenda,
+        this.state.nomeCorte,
+        this.state.precoCorte,
+        this.state.idCabeleireiroAgenda,
+        this.state.nomeCabeleireiro,
+        this.state.dia,
+        this.state.mes,
+        this.state.ano,
+        this.state.hora,
+        this.state.minuto,
+        this.state.nomeUsuario,
+        this.state.idUsuario,
+        "",
       );
+    }else if(this.state.paraoutro){
+      this.agendaController.salvarAgendamento(
+        this, 
+        this.state.idCorteAgenda,
+        this.state.nomeCorte,
+        this.state.precoCorte,
+        this.state.idCabeleireiroAgenda,
+        this.state.nomeCabeleireiro,
+        this.state.dia,
+        this.state.mes,
+        this.state.ano,
+        this.state.hora,
+        this.state.minuto,
+        this.state.inputNome,
+        this.state.idUsuario,
+        this.state.inputTelefone
+      );
+    }else{
+      this.agendaController.salvarAgendamento(
+        this, 
+        this.state.idCorteAgenda,
+        this.state.nomeCorte,
+        this.state.precoCorte,
+        this.state.idCabeleireiroAgenda,
+        this.state.nomeCabeleireiro,
+        this.state.dia,
+        this.state.mes,
+        this.state.ano,
+        this.state.hora,
+        this.state.minuto,
+        this.state.nomeUsuario,
+        this.state.idUsuario,
+        "",
+      );
+    }
+    
   }
 
   carregarListaCortes() {
@@ -587,6 +670,12 @@ export default class Agenda extends React.Component {
       ano: '',
       hora: '',
       minuto: '',
+
+      inputNome: '',
+      inputTelefone: '',
+
+      paraoutro: false,
+      paramim: false,
     })
 
     this.carregarListaCortes()
