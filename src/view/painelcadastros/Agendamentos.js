@@ -15,11 +15,7 @@ export default class Agendamentos extends React.Component {
 
       this.state = {
         arrayAgendamentos: [],
-      
-        id:'',
-        titulo: '',
-        texto:'',
-        preco: '',
+    
       }
     }
 
@@ -39,7 +35,7 @@ export default class Agendamentos extends React.Component {
         var ref = database().ref("/leonbarbershop/agendamentos");
         this.state.arrayAgendamentos = []
     
-        ref.on("child_added", (snapshot) => {
+        ref.orderByChild("ano").on("child_added", (snapshot) => {
             this.setState({ 
                 arrayAgendamentos : 
                 [...this.state.arrayAgendamentos, ...[
@@ -47,6 +43,8 @@ export default class Agendamentos extends React.Component {
                     id:snapshot.key,
                     nomeCliente:snapshot.child("nomeCliente").val(),
                     preco:snapshot.child("precoCorte").val(),
+                    hora: snapshot.child("hora").val(),
+                    minuto: snapshot.child("minuto").val(),
                     dia: snapshot.child("dia").val(),
                     mes: snapshot.child("mes").val(),
                     ano: snapshot.child("ano").val(),
@@ -70,7 +68,8 @@ export default class Agendamentos extends React.Component {
                       <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
                       <View style={{flexDirection:'column'}}>
                         <Text style={estilos.title}>{item.nomeCliente}</Text>
-                        <Text style={estilos.textoNormalProduto}>{item.dia+ "/"+item.mes+"/"+item.ano + " | "+item.nomeCorte}</Text>
+                        <Text style={estilos.textoNormalProduto}>{item.dia+ "/"+item.mes+"/"+item.ano + " | "+item.hora+ ":" +item.minuto}</Text>
+                        <Text style={estilos.textoNormalProduto}>{item.nomeCorte + " | R$ "+ item.preco + ",00"}</Text>
                       </View>
                     </View>
                   ) 

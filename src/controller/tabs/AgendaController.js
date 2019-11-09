@@ -20,7 +20,8 @@ export default class AgendaController {
                 ano: ano,
                 mes: mes,
                 dia: dia,
-                horaMinuto: hora+minuto,
+                hora: hora,
+                minuto: minuto,
 
             }).then(() => {
                 Alert.alert("Sucesso", "O agendamento foi realizado com sucesso!",
