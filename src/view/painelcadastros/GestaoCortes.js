@@ -2,6 +2,7 @@ import React from 'react';
 import {View, BackHandler, FlatList, Text, TextInput, TouchableOpacity, Alert, Image} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Modal from "react-native-modal";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
@@ -14,19 +15,19 @@ export default class GestaoCortes extends React.Component {
 
     this.state = {
       inputTitulo: "",
-      inputTexto: "",
+      inputTempoMin: "",
       inputPreco: "",
       verModal: false,
 
       inputTituloEditar: "",
       inputPrecoEditar: "",
-      inputTextoEditar: "",
+      inputTempoMinEditar: "",
       verModalEditar: false,
 
       tituloCorte: "",
       idCorte: "",
       preco:0.0,
-      texto:"",
+      TempoMin:0,
       verModalEditar: false,
     };
 
@@ -59,7 +60,7 @@ export default class GestaoCortes extends React.Component {
     ref.push().set({
         titulo:this.state.inputTitulo,
         preco:this.state.inputPreco,
-        texto:this.state.inputTexto,
+        tempoMin:this.state.inputTempoMin,
     }).then(() => {
       Alert.alert("Sucesso", "O corte foi cadastrado!",
       [
@@ -84,7 +85,7 @@ export default class GestaoCortes extends React.Component {
                   id:snapshot.key,
                   titulo:snapshot.child("titulo").val(),
                   preco:snapshot.child("preco").val(),
-                  texto:snapshot.child("texto").val()
+                  tempoMin:snapshot.child("tempoMin").val()
                 }
             ]] 
             })
@@ -94,7 +95,7 @@ export default class GestaoCortes extends React.Component {
 
   exibirOcultarModalEditar = (item) => {
     this.setState({inputTituloEditar: item.titulo})
-    this.setState({inputTextoEditar: item.texto})
+    this.setState({inputTempoMinEditar: item.tempoMin})
     this.setState({inputPrecoEditar: item.preco})
     this.setState({idCorte: item.id})
     this.setState({ verModalEditar: !this.state.verModalEditar });
@@ -106,7 +107,7 @@ export default class GestaoCortes extends React.Component {
     ref.set({
       titulo:this.state.inputTituloEditar,
       preco:this.state.inputPrecoEditar,
-      texto:this.state.inputTextoEditar,
+      texto:this.state.inputTempoMin,
     }).then(() => {
       Alert.alert("Sucesso", "O corte foi alterado!",[
         {
@@ -121,7 +122,7 @@ export default class GestaoCortes extends React.Component {
 
   excluirCorte = (item) => {
     var ref = database().ref("/leonbarbershop/cortes/"+item.id);
-    Alert.alert("Apagar", "Deseja apagar o corte " +item.titulo+" na "+item.texto+ "?",
+    Alert.alert("Apagar", "Deseja apagar o corte " +item.titulo+ "?",
         [
             {
                 text: 'Não', onPress: () => 
@@ -143,6 +144,9 @@ export default class GestaoCortes extends React.Component {
   render() {
     return (
         <View style={estilos.viewTabs}>
+          <View style={estilos.viewSuperiorStatus}>
+            <Text style={estilos.textLoginInicial}>Cortes</Text>
+          </View>
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <FlatList
             data={this.state.arrayCortes}
@@ -152,7 +156,7 @@ export default class GestaoCortes extends React.Component {
                   <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
                   <View style={{flexDirection:'column'}}>
                     <Text style={estilos.title}>{item.titulo + " | R$ " + item.preco + ",00"}</Text>
-                    <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
+                    <Text style={estilos.textoNormalProduto}>{"Duração: " +item.tempoMin + " min"}</Text>
                   </View>
                   <View style={{flex: 1, flexDirection:"column", alignItems:"flex-end", justifyContent: "center", marginRight: 0}}>
                     <View style={{flexDirection:"row"}}>
@@ -183,11 +187,11 @@ export default class GestaoCortes extends React.Component {
                   textContentType='name'>
                 </TextInput>
                 <TextInput
-                  onChangeText={(text) => this.setState({inputTexto: text})}
+                  onChangeText={(text) => this.setState({inputTempoMin: text})}
                   blurOnSubmit={false} 
                   style={estilos.textLoginInput} 
-                  keyboardType='name-phone-pad' 
-                  placeholder='Texto...' 
+                  keyboardType='numeric' 
+                  placeholder='Tempo (min)' 
                   textContentType='name'>
                 </TextInput>
                 <TextInput
@@ -219,12 +223,12 @@ export default class GestaoCortes extends React.Component {
                   textContentType='name'>{this.state.inputTituloEditar}
                 </TextInput>
                 <TextInput
-                  onChangeText={(text) => this.setState({inputTextoEditar: text})}
+                  onChangeText={(text) => this.setState({inputTempoMinEditar: text})}
                   blurOnSubmit={false} 
                   style={estilos.textLoginInput} 
-                  keyboardType='name-phone-pad' 
-                  placeholder='Texto...' 
-                  textContentType='name'>{this.state.inputTextoEditar}
+                  keyboardType='numeric' 
+                  placeholder='Tempo (min)' 
+                  textContentType='name'>{this.state.inputTempoMinEditar}
                 </TextInput>
                 <TextInput
                   onChangeText={(text) => this.setState({inputPrecoEditar: text})}
@@ -242,7 +246,7 @@ export default class GestaoCortes extends React.Component {
               </View>
             </Modal>  
             <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
-            <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>
+            <ActionButton renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )} position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>
         </View>
     );
   }

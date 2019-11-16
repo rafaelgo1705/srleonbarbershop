@@ -1,5 +1,7 @@
 import React from 'react';
-import {View, BackHandler, FlatList, Text, TouchableOpacity, Alert, Image} from 'react-native';
+import {View, BackHandler, FlatList, Text, Image} from 'react-native';
+import ActionButton from 'react-native-action-button';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
@@ -19,6 +21,7 @@ export default class Agendamentos extends React.Component {
       this.state = {
         arrayAgendamentos: [],
         date: moment(new Date()),
+        mensagemVazia: 0,
       }
     }
 
@@ -41,7 +44,10 @@ export default class Agendamentos extends React.Component {
 
     carregarAgendamentos = () => {
         var ref = database().ref("/leonbarbershop/agendamentos");
-        this.setState({arrayAgendamentos:[]})
+        this.setState({
+          arrayAgendamentos:[],
+          mensagemVazia: 0
+        })
 
         var data = new Date(this.state.date)
 
@@ -67,6 +73,7 @@ export default class Agendamentos extends React.Component {
           if(ano == anoAtual){
             if(mes == mesAtual){
               if(dia == diaAtual){
+                this.arrayVazio(1)
                 this.setState({ 
                   arrayAgendamentos : 
                   [...this.state.arrayAgendamentos, ...[
@@ -86,8 +93,24 @@ export default class Agendamentos extends React.Component {
               }
             }
           }
-            
+          
         })
+    }
+
+    arrayVazio = (valor) => {
+      if(valor == 0){
+        this.setState({mensagemVazia:0})
+      }else{
+        this.setState({mensagemVazia:1})
+      }
+    }
+
+    mensagem = () => {
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>{"Não há agendamentos para este dia!"}</Text>
+        </View>
+      );
     }
 
     render() {
@@ -121,6 +144,9 @@ export default class Agendamentos extends React.Component {
               </View>
 
               <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                <View>
+                  {this.state.mensagemVazia == 0 ? this.mensagem() : null}
+                </View>
               <FlatList
                 data={this.state.arrayAgendamentos}
                 renderItem={({ item }) => {
@@ -138,8 +164,10 @@ export default class Agendamentos extends React.Component {
                 keyExtractor={item => item.id}
               />
               </ScrollView>
-              </View>
-              );
-              }
+              <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}
+                renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )}/>
+            </View>
+        );
+    }
 
 }

@@ -122,7 +122,7 @@ export default class Agenda extends React.Component {
       //Informações Corte
       idCorteAgenda: '',
       nomeCorte: '',
-      tipoCorte: '',
+      tempoCorte: '',
       precoCorte: '',
 
       //Informações Cabeleireiro
@@ -208,14 +208,14 @@ export default class Agenda extends React.Component {
       idCorteAgenda:'',
       nomeCorte:'',
       precoCorte:'',
-      tipoCorte:''
+      tempoCorte:''
     })
 
     this.setState({
       idCorteAgenda:item.idCorte,
       nomeCorte:item.titulo,
       precoCorte:item.preco,
-      tipoCorte:item.texto
+      tempoCorte:item.tempoMin
     }, () => {this.mudarTela(1)})
   }
 
@@ -323,7 +323,7 @@ export default class Agenda extends React.Component {
                     <Image source={require('../../imagens/user.png')} style={{justifyContent: 'flex-start', alignContent: 'center', marginBottom: 0, padding: 0, height:50, width:50}}/>
                     <View style={{flexDirection:'column'}}>
                       <Text style={estilos.title}>{item.titulo}</Text>
-                      <Text style={estilos.textoNormalProduto}>{item.texto}</Text>
+                      <Text style={estilos.textoNormalProduto}>{item.tempoMin + " min"}</Text>
                     </View>
                     <View style={estilos.estiloPreco}>
                       <Text style={estilos.textoPreco}>{"R$ " + item.preco + ",00"}</Text>
@@ -603,7 +603,7 @@ export default class Agenda extends React.Component {
               idCorte:snapshot.key,
               titulo:snapshot.child("titulo").val(),
               preco:snapshot.child("preco").val(),
-              texto:snapshot.child("texto").val()
+              tempoMin:snapshot.child("tempoMin").val()
             }
         ]] 
         })
@@ -650,7 +650,7 @@ export default class Agenda extends React.Component {
       arrayCortes: [],
       id:'',
       titulo: '',
-      texto:'',
+      tempoMin:'',
       preco: '',
 
       //ArrayAgenda

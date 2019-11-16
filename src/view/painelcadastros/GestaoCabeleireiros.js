@@ -2,6 +2,7 @@ import React from 'react';
 import {View, BackHandler, FlatList, Text, TextInput, TouchableOpacity, Alert, Image} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Modal from "react-native-modal";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
@@ -276,6 +277,9 @@ export default class GestaoCabeleireiros extends React.Component {
   render() {
     return (
         <View style={estilos.viewTabs}>
+          <View style={estilos.viewSuperiorStatus}>
+            <Text style={estilos.textLoginInicial}>Cabeleireiros</Text>
+          </View>
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <FlatList
             data={this.state.arrayCabeleireiros}
@@ -438,7 +442,7 @@ export default class GestaoCabeleireiros extends React.Component {
 
           <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
 
-          <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
+          <ActionButton renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )} position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
         </View>
     );
   }
