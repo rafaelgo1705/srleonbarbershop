@@ -28,7 +28,7 @@ export default class Agendamentos extends React.Component {
     componentDidMount() {
         this.carregarAgendamentos()
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            this.props.navigation.navigate('Cadastramento');
+            this.props.navigation.navigate('Menu');
             return true;
         });
     }
@@ -164,7 +164,7 @@ export default class Agendamentos extends React.Component {
                 keyExtractor={item => item.id}
               />
               </ScrollView>
-              <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}
+              <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Menu")}
                 renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )}/>
             </View>
         );

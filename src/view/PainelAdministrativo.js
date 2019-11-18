@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Picker, BackHandler, Switch, Alert, TouchableOpacity, TextInput, ScrollView} from 'react-native';
+import {View, Text, Image, Picker, BackHandler, Switch, Alert, TouchableOpacity, TextInput, ScrollView} from 'react-native';
 
 import estilos from '../styles/estilos';
 
@@ -173,7 +173,10 @@ export default class PainelAdministrativo extends React.Component {
     return (
       <ScrollView contentContainerStyle={estilos.scrollViewLogin}>
         <View style={estilos.viewRedefinirSenha}>
-          <Text style={estilos.textLoginInicial}>Painel</Text>
+            <TouchableOpacity onPress={()=> this.props.navigation.navigate('Conta')} style={estilos.viewInicialCadastro}>
+              <Image source={require('../imagens/icons/voltar_icon.png')}></Image>
+              <Text style={estilos.textLoginInicial}>Painel</Text>
+            </TouchableOpacity>
 
           <TextInput
                 maxLength={35}

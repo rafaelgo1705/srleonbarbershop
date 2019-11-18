@@ -9,11 +9,13 @@ import AgendaController from '../../controller/tabs/AgendaController';
 import database from '@react-native-firebase/database';
 
 import { CheckBox } from 'react-native-elements'
-import {Calendar} from 'react-native-calendars';
+import {CalendarList, LocaleConfig} from 'react-native-calendars';
 
 import auth from '@react-native-firebase/auth';
 
 import Base64 from '../../base64/Base64';
+
+console.disableYellowBox = true;
 
 export default class Agenda extends React.Component {
   constructor(props){
@@ -147,6 +149,15 @@ export default class Agenda extends React.Component {
       inputTelefone: '',
       inputNome: '',
     }
+
+    LocaleConfig.locales['pt-br'] = {
+      monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+      monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+      dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+      dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+      today: 'Hoje'
+    };
+    LocaleConfig.defaultLocale = 'pt-br';
   }
 
   componentDidMount(){
@@ -381,7 +392,10 @@ export default class Agenda extends React.Component {
           </TouchableOpacity>
           <Text style={estilos.textoNegritoAgenda}>Selecione a data</Text>
         </View>
-        <Calendar
+        <CalendarList
+          horizontal={true}
+          pagingEnabled={true}
+
           onDayPress={(date) => {
             this._onPressData(date)
           }}

@@ -47,7 +47,7 @@ export default class GestaoCabeleireiros extends React.Component {
   componentDidMount() {
     this.carregarListaCabeleireiros();
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      this.props.navigation.navigate('Cadastramento');
+      this.props.navigation.navigate('Menu');
       return true;
     });
   }
@@ -442,7 +442,7 @@ export default class GestaoCabeleireiros extends React.Component {
 
           <ActionButton buttonColor={colors.corButtonLogin} onPress={this.exibirOcultarModal}/>
 
-          <ActionButton renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )} position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Cadastramento")}/>            
+          <ActionButton renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )} position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Menu")}/>            
         </View>
     );
   }

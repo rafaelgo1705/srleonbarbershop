@@ -24,6 +24,7 @@ import CadastroAdministrativo from './src/view/CadastroAdministrativo';
 import GestaoCabeleireiros from './src/view/painelcadastros/GestaoCabeleireiros';
 import GestaoCortes from './src/view/painelcadastros/GestaoCortes';
 import Agendamentos from './src/view/painelcadastros/Agendamentos';
+import Calendario from './src/view/painelcadastros/Calendario';
 
 const AppCreateBottomTabNavigator = createBottomTabNavigator({
   Home,
@@ -65,7 +66,7 @@ const AppCreateBottomTabNavigator = createBottomTabNavigator({
 
 const AppCreateBottomTabNavigatorPainel = createBottomTabNavigator ({
   Painel: {screen: PainelAdministrativo},
-  Cadastramento: {screen: CadastroAdministrativo}
+  Menu: {screen: CadastroAdministrativo}
 }, {
   initialRouteName: 'Painel',
   defaultNavigationOptions: ({ navigation }) => ({
@@ -78,7 +79,7 @@ const AppCreateBottomTabNavigatorPainel = createBottomTabNavigator ({
       if (routeName === 'Painel') {
         iconName = typeIcon+`-browsers`;
         
-      } else if (routeName === 'Cadastramento') {
+      } else if (routeName === 'Menu') {
         iconName = typeIcon+`-filing`;
       } 
 
@@ -105,6 +106,7 @@ const AppCreateSwitchNavigator = createSwitchNavigator ({
   GestaoCabeleireiros: {screen: GestaoCabeleireiros},
   GestaoCortes:{screen:GestaoCortes},
   Agendamentos:{screen:Agendamentos},
+  Calendario:{screen:Calendario}
 },{
   initialRouteName: 'SplashScreen'
 })

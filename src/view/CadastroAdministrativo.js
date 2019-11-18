@@ -21,13 +21,17 @@ export default class CadastroAdministrativo extends React.Component {
     this.props.navigation.navigate("Agendamentos")
   }
 
+  abrirTelaCalendario = () => {
+    this.props.navigation.navigate("Calendario")
+  }
+
   render() {
     return (
       <ScrollView contentContainerStyle={estilos.scrollViewLogin}>
         <View style={estilos.viewRedefinirSenha}>
           <View style={{alignItems: "center", marginBottom: 20}}>
             <Image source={require('../imagens/logo.png')} style={{alignContent: 'center', marginBottom: -10, padding: 0, height:200, width:200}}></Image>
-            <Text style={estilos.textoTitulo}>Cadastro agenda</Text>
+            <Text style={estilos.textoTitulo}>Menu de opções</Text>
           </View>
 
           <TouchableOpacity onPress={this.abrirTelaGestaoCabeleireiros} style={estilos.buttonCadastroAgenda}>
@@ -39,6 +43,10 @@ export default class CadastroAdministrativo extends React.Component {
 
           <TouchableOpacity onPress={this.abrirTelaAgendamentos} style={estilos.buttonCadastroAgenda}>
             <Text style={estilos.buttonLoginTexto} >Agendamentos</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.abrirTelaCalendario} style={estilos.buttonCadastroAgenda}>
+            <Text style={estilos.buttonLoginTexto} >Calendário</Text>
           </TouchableOpacity>
 
         </View>
