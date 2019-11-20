@@ -601,6 +601,25 @@ const estilos = {
     },
 
     /**Fim Tela cadastro agenda */
+    /**Tela Calendario */
+    textHorarioAtendimentoCalendario: {
+        color: colors.corPreta, 
+        textAlign: 'center', 
+        marginVertical: 10, 
+        fontSize: 18, 
+        fontWeight: 'bold', 
+        fontFamily: 'Segoe UI'
+    },
+
+    diaSemanaCalendario: {
+        color: colors.corBranca,
+        backgroundColor: colors.corTextoNormal,
+        padding: 7,
+        marginTop:10,
+        borderRadius: 30,
+        marginHorizontal: 2,
+    },
+    /**Fim Tela Calendario */
     
 }
 

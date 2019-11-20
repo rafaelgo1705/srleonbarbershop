@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, BackHandler, Text, Alert} from 'react-native';
+import {ScrollView, View, BackHandler, Text, Alert} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -7,9 +7,9 @@ import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
 
 import database from '@react-native-firebase/database';
-import { ScrollView } from 'react-native-gesture-handler';
 
-import {CalendarList, LocaleConfig, Agenda} from 'react-native-calendars';
+import {CalendarList, LocaleConfig} from 'react-native-calendars';
+import TimePicker from "react-native-24h-timepicker";
 
 export default class Calendario extends React.Component {
     constructor(props){
@@ -19,6 +19,7 @@ export default class Calendario extends React.Component {
         dia: '',
         mes: '',
         ano: '',
+        diaSemana:0,
       }
 
       LocaleConfig.locales['pt-br'] = {
@@ -60,7 +61,67 @@ export default class Calendario extends React.Component {
         mes: date.month,
         ano: date.year,
       })
-      console.log(date.day)
+    }
+
+    cancelDialog = () => {
+      this.setState({dialogVisible:false})
+    }
+
+    selecionarHorario = (hora, minuto) => {      
+      if(this.state.diaSemana == 1){
+        Alert.alert("Domingo", hora+":"+minuto)
+
+      }else if(this.state.diaSemana == 2){
+
+      }else if(this.state.diaSemana == 3){
+
+      }else if(this.state.diaSemana == 4){
+
+      }else if(this.state.diaSemana == 5){
+
+      }else if(this.state.diaSemana == 6){
+
+      }else if(this.state.diaSemana == 7){
+
+      }
+      this.cancelarEscolhaHorario();
+    }
+
+    cancelarEscolhaHorario() {
+      this.TimePicker.close();
+    }
+
+    verHorario = (diaSemana) => {
+      this.setState({diaSemana:0})
+      if(diaSemana == 1){
+        this.TimePicker.open();
+        this.setState({diaSemana:1})
+      
+      }else if(diaSemana == 2){
+        this.TimePicker.open();
+        this.setState({diaSemana:2})
+      
+      }else if(diaSemana == 3){
+        this.TimePicker.open();
+        this.setState({diaSemana:3})
+      
+      }else if(diaSemana == 4){
+        this.TimePicker.open();
+        this.setState({diaSemana:4})
+      
+      }else if(diaSemana == 5){
+        this.TimePicker.open();
+        this.setState({diaSemana:5})
+      
+      }else if(diaSemana == 6){
+        this.TimePicker.open();
+        this.setState({diaSemana:6})
+      
+      }else if(diaSemana == 7){
+        this.TimePicker.open();
+        this.setState({diaSemana:7})
+      
+      }
     }
 
     render() {
@@ -86,7 +147,30 @@ export default class Calendario extends React.Component {
                     this._onPressData(date)
                   }}
                 />
+                <Text style={estilos.textHorarioAtendimentoCalendario}> Horário de Atendimento</Text>
+                <View style={{justifyContent:"center", marginBottom: 20, flexDirection:"row"}}>
+                  <Text onPress={() => this.verHorario(1)} style={estilos.diaSemanaCalendario}> Dom </Text>
+                  <Text onPress={() => this.verHorario(2)} style={estilos.diaSemanaCalendario}> Seg </Text>
+                  <Text onPress={() => this.verHorario(3)} style={estilos.diaSemanaCalendario}> Ter </Text>
+                  <Text onPress={() => this.verHorario(4)} style={estilos.diaSemanaCalendario}> Qua </Text>
+                  <Text onPress={() => this.verHorario(5)} style={estilos.diaSemanaCalendario}> Qui </Text>
+                  <Text onPress={() => this.verHorario(6)} style={estilos.diaSemanaCalendario}> Sex </Text>
+                  <Text onPress={() => this.verHorario(7)} style={estilos.diaSemanaCalendario}> Sab </Text> 
+                </View>
+
+                <TimePicker
+                  textCancel="Cancelar"
+                  textConfirm="Confirmar"
+                  selectedHour="00"
+                  ref={ref => {
+                    this.TimePicker = ref;
+                  }}
+                  onCancel={() => this.cancelarEscolhaHorario()}
+                  onConfirm={(hour, minute) => this.selecionarHorario(hour, minute)}
+                >
+                </TimePicker>
               </ScrollView>
+          
               <ActionButton position="left" buttonColor={colors.corVermelhaApp} onPress={() => this.props.navigation.navigate("Menu")}
                 renderIcon={() => (<Ionicons color={colors.corBranca} name="md-arrow-back" size={25}/> )}/>
             </View>
