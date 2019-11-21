@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View, BackHandler, Text, Alert} from 'react-native';
+import {ScrollView, TouchableOpacity, View, BackHandler, Text, Alert} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -20,6 +20,7 @@ export default class Calendario extends React.Component {
         mes: '',
         ano: '',
         diaSemana:0,
+        diaHora:0,
       }
 
       LocaleConfig.locales['pt-br'] = {
@@ -67,24 +68,60 @@ export default class Calendario extends React.Component {
       this.setState({dialogVisible:false})
     }
 
-    selecionarHorario = (hora, minuto) => {      
-      if(this.state.diaSemana == 1){
-        Alert.alert("Domingo", hora+":"+minuto)
+    escolherHorarioDia = (horaDia) => {
+      this.setState({horaDia:horaDia},() => {
+        this.TimePicker.open();
+      }) 
+    }
 
+    selecionarHorario = (hora, minuto) => { 
+      console.log(this.state.diaSemana + " | " + this.state.diaHora)     
+      if(this.state.diaSemana == 1){
+        if(this.state.diaHora == 11){
+          this.salvarHorario(hora, minuto, this.state.diaSemana)
+
+        }else if(this.state.diaHora == 12){
+          this.salvarHorario(hora, minuto, this.state.diaSemana)
+        }
+    
       }else if(this.state.diaSemana == 2){
+        this.salvarHorario(hora, minuto, this.state.diaSemana)
 
       }else if(this.state.diaSemana == 3){
+        this.salvarHorario(hora, minuto, this.state.diaSemana)
 
       }else if(this.state.diaSemana == 4){
+        this.salvarHorario(hora, minuto, this.state.diaSemana)
 
       }else if(this.state.diaSemana == 5){
+        this.salvarHorario(hora, minuto, this.state.diaSemana)
 
       }else if(this.state.diaSemana == 6){
+        this.salvarHorario(hora, minuto, this.state.diaSemana)
 
       }else if(this.state.diaSemana == 7){
-
+        this.salvarHorario(hora, minuto, this.state.diaSemana)
       }
       this.cancelarEscolhaHorario();
+    }
+
+    salvarHorario = (hora, minuto, diaSemana) => {
+      if(this.state.diaHora == 11){
+        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${diaSemana}/${this.state.diaHora}`);
+        ref.set({
+          horaInicio:hora,
+          minutoInicio:minuto,
+         
+        })
+      }else if(this.state.diaHora == 12){
+        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${diaSemana}/${this.state.diaHora}`);
+        ref.set({
+          horaFim:hora,
+          minutoFim:minuto,
+         
+        })
+      }
+      
     }
 
     cancelarEscolhaHorario() {
@@ -94,34 +131,43 @@ export default class Calendario extends React.Component {
     verHorario = (diaSemana) => {
       this.setState({diaSemana:0})
       if(diaSemana == 1){
-        this.TimePicker.open();
         this.setState({diaSemana:1})
       
       }else if(diaSemana == 2){
-        this.TimePicker.open();
+        //this.TimePicker.open();
         this.setState({diaSemana:2})
       
       }else if(diaSemana == 3){
-        this.TimePicker.open();
+        //this.TimePicker.open();
         this.setState({diaSemana:3})
       
       }else if(diaSemana == 4){
-        this.TimePicker.open();
+        //this.TimePicker.open();
         this.setState({diaSemana:4})
       
       }else if(diaSemana == 5){
-        this.TimePicker.open();
+        //this.TimePicker.open();
         this.setState({diaSemana:5})
       
       }else if(diaSemana == 6){
-        this.TimePicker.open();
+        //this.TimePicker.open();
         this.setState({diaSemana:6})
       
       }else if(diaSemana == 7){
-        this.TimePicker.open();
+        //this.TimePicker.open();
         this.setState({diaSemana:7})
       
       }
+    }
+
+    telaDomingo(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Domingo</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(11)}><Text>Início</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(12)}><Text>Término</Text></TouchableOpacity>
+        </View>
+      );
     }
 
     render() {
@@ -158,9 +204,19 @@ export default class Calendario extends React.Component {
                   <Text onPress={() => this.verHorario(7)} style={estilos.diaSemanaCalendario}> Sab </Text> 
                 </View>
 
+                <View>
+                  {this.state.diaSemana == 1 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 2 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 3 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 4 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 5 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 6 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 7 ? this.telaDomingo() : null}
+                </View>
+
                 <TimePicker
                   textCancel="Cancelar"
-                  textConfirm="Confirmar"
+                  textConfirm="Alterar"
                   selectedHour="00"
                   ref={ref => {
                     this.TimePicker = ref;
