@@ -38,7 +38,7 @@ export default class Calendario extends React.Component {
     }
 
     componentDidMount() {
-        this.carregarCalendario()
+        //this.carregarCalendario()
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             this.props.navigation.navigate('Menu');
             return true;
@@ -51,14 +51,14 @@ export default class Calendario extends React.Component {
 
     selecionarDiaCalendario = (date) => {
       this.setState({date:date})
-      this.carregarCalendario();
+      //this.carregarCalendario();
     }
 
-    carregarCalendario = () => {
+    /*carregarCalendario = () => {
       var ref = database().ref("/leonbarbershop/calendario");
       
 
-    }
+    }*/
 
     _onPressData = (date) => {
       this.setState({
@@ -78,14 +78,28 @@ export default class Calendario extends React.Component {
       }) 
     }
 
-    selecionarHorario = (hora, minuto) => { 
+    selecionarHorario = (hora, minuto) => {
       console.log(this.state.diaSemana + " | " + this.state.horaDia)     
       if(this.state.diaSemana == 1){
         if(this.state.horaDia == 1){
-          this.salvarHorario(hora, minuto, 1)
+          this.setState({
+            horaInicio:hora,
+            minutoInicio:minuto
+          }, () => {
+            this.salvarHorario(1)
+          })
+          
+          //this.salvarHorario(hora, minuto, 1)
 
         }else if(this.state.horaDia == 2){
-          this.salvarHorario(hora, minuto, 2)
+          this.setState({
+            horaTermino:hora,
+            minutoTermino:minuto
+          }, () => {
+            this.salvarHorario(2)
+          })
+          
+          //this.salvarHorario(hora, minuto, 2)
         }
 
       }else if(this.state.diaSemana == 2){
@@ -141,12 +155,12 @@ export default class Calendario extends React.Component {
       this.cancelarEscolhaHorario();
     }
 
-    salvarHorario = (hora, minuto, turnoDia) => {
+    salvarHorario = (turnoDia) => {
       if(turnoDia == 1){
         var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
-          horaInicio:hora,
-          minutoInicio:minuto,
+          horaInicio:this.state.horaInicio,
+          minutoInicio:this.state.minutoInicio,
         }).then(() => {
           Alert.alert("Sucesso", "O horário foi alterado!")
           this.limparCampos();
@@ -155,8 +169,8 @@ export default class Calendario extends React.Component {
       }else if(turnoDia == 2){
         var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
-          horaTermino:hora,
-          minutoTermino:minuto,
+          horaTermino:this.state.horaTermino,
+          minutoTermino:this.state.minutoTermino,
         }).then(() => {
           Alert.alert("Sucesso", "O horário foi alterado!")
           this.limparCampos();
