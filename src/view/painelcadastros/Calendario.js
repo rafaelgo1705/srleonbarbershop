@@ -20,7 +20,11 @@ export default class Calendario extends React.Component {
         mes: '',
         ano: '',
         diaSemana:0,
-        diaHora:0,
+        horaDia:0,
+        horaInicio: "",
+        minutoInicio: "",
+        horaTermino: "",
+        minutoTermino: "",
       }
 
       LocaleConfig.locales['pt-br'] = {
@@ -75,88 +79,187 @@ export default class Calendario extends React.Component {
     }
 
     selecionarHorario = (hora, minuto) => { 
-      console.log(this.state.diaSemana + " | " + this.state.diaHora)     
+      console.log(this.state.diaSemana + " | " + this.state.horaDia)     
       if(this.state.diaSemana == 1){
-        if(this.state.diaHora == 11){
-          this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 1){
+          this.salvarHorario(hora, minuto, 1)
 
-        }else if(this.state.diaHora == 12){
-          this.salvarHorario(hora, minuto, this.state.diaSemana)
+        }else if(this.state.horaDia == 2){
+          this.salvarHorario(hora, minuto, 2)
         }
-    
+
       }else if(this.state.diaSemana == 2){
-        this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 3){
+          this.salvarHorario(hora, minuto, 1)
+
+        }else if(this.state.horaDia == 4){
+          this.salvarHorario(hora, minuto, 2)
+        }
 
       }else if(this.state.diaSemana == 3){
-        this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 5){
+          this.salvarHorario(hora, minuto, 1)
+
+        }else if(this.state.horaDia == 6){
+          this.salvarHorario(hora, minuto, 2)
+        }
 
       }else if(this.state.diaSemana == 4){
-        this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 7){
+          this.salvarHorario(hora, minuto, 1)
+
+        }else if(this.state.horaDia == 8){
+          this.salvarHorario(hora, minuto, 2)
+        }
 
       }else if(this.state.diaSemana == 5){
-        this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 9){
+          this.salvarHorario(hora, minuto, 1)
+
+        }else if(this.state.horaDia == 10){
+          this.salvarHorario(hora, minuto, 2)
+        }
 
       }else if(this.state.diaSemana == 6){
-        this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 11){
+          this.salvarHorario(hora, minuto, 1)
+
+        }else if(this.state.horaDia == 12){
+          this.salvarHorario(hora, minuto, 2)
+        }
 
       }else if(this.state.diaSemana == 7){
-        this.salvarHorario(hora, minuto, this.state.diaSemana)
+        if(this.state.horaDia == 13){
+          this.salvarHorario(hora, minuto, 1)
+
+        }else if(this.state.horaDia == 14){
+          this.salvarHorario(hora, minuto, 2)
+        }
+
       }
+
       this.cancelarEscolhaHorario();
     }
 
-    salvarHorario = (hora, minuto, diaSemana) => {
-      if(this.state.diaHora == 11){
-        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${diaSemana}/${this.state.diaHora}`);
+    salvarHorario = (hora, minuto, turnoDia) => {
+      if(turnoDia == 1){
+        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
           horaInicio:hora,
           minutoInicio:minuto,
-         
+        }).then(() => {
+          Alert.alert("Sucesso", "O horário foi alterado!")
+          this.limparCampos();
         })
-      }else if(this.state.diaHora == 12){
-        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${diaSemana}/${this.state.diaHora}`);
+
+      }else if(turnoDia == 2){
+        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
-          horaFim:hora,
-          minutoFim:minuto,
-         
+          horaTermino:hora,
+          minutoTermino:minuto,
+        }).then(() => {
+          Alert.alert("Sucesso", "O horário foi alterado!")
+          this.limparCampos();
         })
-      }
-      
+      } 
+    }
+
+    limparCampos(){
+      this.setState({
+        diaSemana:0,
+        diaHora:0
+      })
     }
 
     cancelarEscolhaHorario() {
       this.TimePicker.close();
     }
 
+    carregarHorarios = (dia) => {
+      if(dia == 1){
+        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${dia}`);
+
+        ref.on("child_added", (snapshot) => {
+          this.setState({horaInicio:snapshot.child("horaInicio").val()})
+          this.setState({minutoInicio:snapshot.child("minutoInicio").val()})
+          this.setState({horaTermino:snapshot.child("horaTermino").val()})
+          this.setState({minutoTermino:snapshot.child("minutoTermino").val()})
+
+        })
+      }
+    }
+
     verHorario = (diaSemana) => {
       this.setState({diaSemana:0})
       if(diaSemana == 1){
-        this.setState({diaSemana:1})
+        this.setState({
+          diaSemana:1,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(1)
       
       }else if(diaSemana == 2){
-        //this.TimePicker.open();
-        this.setState({diaSemana:2})
+        this.setState({
+          diaSemana:2,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(2)
       
       }else if(diaSemana == 3){
-        //this.TimePicker.open();
-        this.setState({diaSemana:3})
+        this.setState({
+          diaSemana:3,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(3)
       
       }else if(diaSemana == 4){
-        //this.TimePicker.open();
-        this.setState({diaSemana:4})
+        this.setState({
+          diaSemana:4,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(4)
       
       }else if(diaSemana == 5){
-        //this.TimePicker.open();
-        this.setState({diaSemana:5})
+        this.setState({
+          diaSemana:5,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(5)
       
       }else if(diaSemana == 6){
-        //this.TimePicker.open();
-        this.setState({diaSemana:6})
+        this.setState({
+          diaSemana:6,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(6)
       
       }else if(diaSemana == 7){
-        //this.TimePicker.open();
-        this.setState({diaSemana:7})
-      
+        this.setState({
+          diaSemana:7,
+          horaInicio: "",
+          minutoInicio: "",
+          horaTermino: "",
+          minutoTermino: "",
+        })
+        this.carregarHorarios(7)
       }
     }
 
@@ -164,8 +267,68 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Domingo</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(1)}><Text>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(2)}><Text>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+        </View>
+      );
+    }
+
+    telaSegunda(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Segunda</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(3)}><Text>Início</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(4)}><Text>Término</Text></TouchableOpacity>
+        </View>
+      );
+    }
+
+    telaTerça(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Terça</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(5)}><Text>Início</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(6)}><Text>Término</Text></TouchableOpacity>
+        </View>
+      );
+    }
+
+    telaQuarta(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Quarta</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(7)}><Text>Início</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(8)}><Text>Término</Text></TouchableOpacity>
+        </View>
+      );
+    }
+
+    telaQuinta(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Quinta</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(9)}><Text>Início</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(10)}><Text>Término</Text></TouchableOpacity>
+        </View>
+      );
+    }
+
+    telaSexta(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Sexta</Text>
           <TouchableOpacity onPress={() => this.escolherHorarioDia(11)}><Text>Início</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => this.escolherHorarioDia(12)}><Text>Término</Text></TouchableOpacity>
+        </View>
+      );
+    }
+
+    telaSabado(){
+      return(
+        <View style={{alignItems:"center"}}>
+          <Text style={estilos.opcoesContaTab}>Sábado</Text>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(13)}><Text>Início</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => this.escolherHorarioDia(14)}><Text>Término</Text></TouchableOpacity>
         </View>
       );
     }
@@ -206,12 +369,12 @@ export default class Calendario extends React.Component {
 
                 <View>
                   {this.state.diaSemana == 1 ? this.telaDomingo() : null}
-                  {this.state.diaSemana == 2 ? this.telaDomingo() : null}
-                  {this.state.diaSemana == 3 ? this.telaDomingo() : null}
-                  {this.state.diaSemana == 4 ? this.telaDomingo() : null}
-                  {this.state.diaSemana == 5 ? this.telaDomingo() : null}
-                  {this.state.diaSemana == 6 ? this.telaDomingo() : null}
-                  {this.state.diaSemana == 7 ? this.telaDomingo() : null}
+                  {this.state.diaSemana == 2 ? this.telaSegunda() : null}
+                  {this.state.diaSemana == 3 ? this.telaTerça() : null}
+                  {this.state.diaSemana == 4 ? this.telaQuarta() : null}
+                  {this.state.diaSemana == 5 ? this.telaQuinta() : null}
+                  {this.state.diaSemana == 6 ? this.telaSexta() : null}
+                  {this.state.diaSemana == 7 ? this.telaSabado() : null}
                 </View>
 
                 <TimePicker

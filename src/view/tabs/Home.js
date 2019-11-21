@@ -60,7 +60,7 @@ export default class Home extends React.Component {
   }
 
   verificarHora(){
-    var dayOfWeek = moment().toDate();
+    /*var dayOfWeek = moment().toDate();
     var diaDaSemana = this.diaDaSemana(dayOfWeek);
 
     var hora = moment().format('HH');
@@ -183,7 +183,7 @@ export default class Home extends React.Component {
           horarioAtendimento: arrayHorarios
         })
       }
-    }    
+    }*/ 
   }
 
   horarioAtendimento(){
