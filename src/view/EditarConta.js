@@ -63,7 +63,7 @@ export default class EditarConta extends React.Component {
             <TextInput
                 onChangeText={(text) => this.setState({inputNome: text})}
                 blurOnSubmit={false} 
-                onSubmitEditing={() => { this.email.focus(); }}
+                onSubmitEditing={() => { this.telefone.focus(); }}
                 style={estilos.textLoginInput} 
                 keyboardType='name-phone-pad' 
                 placeholder='Nome...' 
@@ -78,6 +78,7 @@ export default class EditarConta extends React.Component {
                 style={estilos.textLoginInput} 
                 keyboardType='email-address' 
                 placeholder='Email...' 
+                editable={false}
                 textContentType='emailAddress'>{this.state.email}
             </TextInput>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, TouchableOpacity, View, BackHandler, Text, Alert} from 'react-native';
+import {ScrollView, TouchableOpacity, View, BackHandler, Text, Alert, ToastAndroid} from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -143,22 +143,22 @@ export default class Calendario extends React.Component {
 
     salvarHorario = (hora, minuto, turnoDia) => {
       if(turnoDia == 1){
-        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
+        var ref = database().ref(`/leonbarbershop/painel/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
           horaInicio:hora,
           minutoInicio:minuto,
         }).then(() => {
-          Alert.alert("Sucesso", "O horário foi alterado!")
+          ToastAndroid.show("Horário alterado!", ToastAndroid.LONG)
           this.limparCampos();
         })
 
       }else if(turnoDia == 2){
-        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
+        var ref = database().ref(`/leonbarbershop/painel/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
           horaTermino:hora,
           minutoTermino:minuto,
         }).then(() => {
-          Alert.alert("Sucesso", "O horário foi alterado!")
+          ToastAndroid.show("Horário alterado!", ToastAndroid.LONG)
           this.limparCampos();
         })
       } 
@@ -176,7 +176,7 @@ export default class Calendario extends React.Component {
     }
 
     carregarHorarios = (dia) => {
-      var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${dia}`);
+      var ref = database().ref(`/leonbarbershop/painel/horarioAtendimento/${dia}`);
 
       ref.on("child_added", (snapshot) => {
         var horaInicio = snapshot.child("horaInicio").val()

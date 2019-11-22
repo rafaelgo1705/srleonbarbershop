@@ -179,7 +179,7 @@ const estilos = {
     },
 
     textoStatusBarbeariaAberto:{
-        marginVertical: 15,
+        marginVertical: 5,
         borderRadius: 30,
         padding: 15,
         fontFamily: 'Segoe UI',
@@ -631,8 +631,7 @@ const estilos = {
         fontWeight: "bold",
         color: colors.corVerdeApp,
     },
-    /**Fim Tela Calendario */
-    
+    /**Fim Tela Calendario */ 
 }
 
 export default estilos;
