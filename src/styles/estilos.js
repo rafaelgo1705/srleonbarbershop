@@ -619,6 +619,18 @@ const estilos = {
         borderRadius: 30,
         marginHorizontal: 2,
     },
+
+    textoInicioTermino: {
+        color: colors.corTextoNormal,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
+    textoHorario: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: colors.corVerdeApp,
+    },
     /**Fim Tela Calendario */
     
 }

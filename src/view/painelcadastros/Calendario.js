@@ -82,24 +82,10 @@ export default class Calendario extends React.Component {
       console.log(this.state.diaSemana + " | " + this.state.horaDia)     
       if(this.state.diaSemana == 1){
         if(this.state.horaDia == 1){
-          this.setState({
-            horaInicio:hora,
-            minutoInicio:minuto
-          }, () => {
-            this.salvarHorario(1)
-          })
-          
-          //this.salvarHorario(hora, minuto, 1)
+          this.salvarHorario(hora, minuto, 1)
 
         }else if(this.state.horaDia == 2){
-          this.setState({
-            horaTermino:hora,
-            minutoTermino:minuto
-          }, () => {
-            this.salvarHorario(2)
-          })
-          
-          //this.salvarHorario(hora, minuto, 2)
+          this.salvarHorario(hora, minuto, 2)
         }
 
       }else if(this.state.diaSemana == 2){
@@ -155,12 +141,12 @@ export default class Calendario extends React.Component {
       this.cancelarEscolhaHorario();
     }
 
-    salvarHorario = (turnoDia) => {
+    salvarHorario = (hora, minuto, turnoDia) => {
       if(turnoDia == 1){
         var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
-          horaInicio:this.state.horaInicio,
-          minutoInicio:this.state.minutoInicio,
+          horaInicio:hora,
+          minutoInicio:minuto,
         }).then(() => {
           Alert.alert("Sucesso", "O horário foi alterado!")
           this.limparCampos();
@@ -169,8 +155,8 @@ export default class Calendario extends React.Component {
       }else if(turnoDia == 2){
         var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${this.state.diaSemana}/${this.state.horaDia}`);
         ref.set({
-          horaTermino:this.state.horaTermino,
-          minutoTermino:this.state.minutoTermino,
+          horaTermino:hora,
+          minutoTermino:minuto,
         }).then(() => {
           Alert.alert("Sucesso", "O horário foi alterado!")
           this.limparCampos();
@@ -190,17 +176,23 @@ export default class Calendario extends React.Component {
     }
 
     carregarHorarios = (dia) => {
-      if(dia == 1){
-        var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${dia}`);
+      var ref = database().ref(`/leonbarbershop/textos/horarioAtendimento/${dia}`);
 
-        ref.on("child_added", (snapshot) => {
-          this.setState({horaInicio:snapshot.child("horaInicio").val()})
-          this.setState({minutoInicio:snapshot.child("minutoInicio").val()})
-          this.setState({horaTermino:snapshot.child("horaTermino").val()})
-          this.setState({minutoTermino:snapshot.child("minutoTermino").val()})
+      ref.on("child_added", (snapshot) => {
+        var horaInicio = snapshot.child("horaInicio").val()
+        var minutoInicio = snapshot.child("minutoInicio").val()
+        var horaTermino = snapshot.child("horaTermino").val()
+        var minutoTermino = snapshot.child("minutoTermino").val()
 
-        })
-      }
+        if((this.state.horaInicio == "" || this.state.horaInicio == null) && (this.state.minutoInicio == "" || this.state.minutoInicio == null)){
+          this.setState({horaInicio:horaInicio})
+          this.setState({minutoInicio:minutoInicio})
+          
+        }else if((this.state.horaTermino == "" || this.state.horaTermino == null) && (this.state.minutoTermino == "" || this.state.minutoTermino == null)){
+          this.setState({horaTermino:horaTermino})
+          this.setState({minutoTermino:minutoTermino})
+        }
+      })
     }
 
     verHorario = (diaSemana) => {
@@ -212,9 +204,10 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
+        }, () => {
+          this.carregarHorarios(1)
         })
-        this.carregarHorarios(1)
-      
+        
       }else if(diaSemana == 2){
         this.setState({
           diaSemana:2,
@@ -222,8 +215,9 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
+        }, () => {
+          this.carregarHorarios(2)
         })
-        this.carregarHorarios(2)
       
       }else if(diaSemana == 3){
         this.setState({
@@ -232,8 +226,9 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
+        }, () => {
+          this.carregarHorarios(3)
         })
-        this.carregarHorarios(3)
       
       }else if(diaSemana == 4){
         this.setState({
@@ -242,9 +237,10 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
+        }, () => {
+          this.carregarHorarios(4)
         })
-        this.carregarHorarios(4)
-      
+        
       }else if(diaSemana == 5){
         this.setState({
           diaSemana:5,
@@ -252,9 +248,10 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
+        }, () => {
+          this.carregarHorarios(5)
         })
-        this.carregarHorarios(5)
-      
+        
       }else if(diaSemana == 6){
         this.setState({
           diaSemana:6,
@@ -262,8 +259,9 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
+        }, () => {
+          this.carregarHorarios(6)
         })
-        this.carregarHorarios(6)
       
       }else if(diaSemana == 7){
         this.setState({
@@ -272,8 +270,9 @@ export default class Calendario extends React.Component {
           minutoInicio: "",
           horaTermino: "",
           minutoTermino: "",
-        })
-        this.carregarHorarios(7)
+        }, () => {
+          this.carregarHorarios(7)
+        })   
       }
     }
 
@@ -281,8 +280,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Domingo</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(1)}><Text>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(2)}><Text>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(1)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(2)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -291,8 +294,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Segunda</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(3)}><Text>Início</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(4)}><Text>Término</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(3)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(4)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -301,8 +308,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Terça</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(5)}><Text>Início</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(6)}><Text>Término</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(5)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(6)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>  
         </View>
       );
     }
@@ -311,8 +322,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Quarta</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(7)}><Text>Início</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(8)}><Text>Término</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(7)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(8)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -321,8 +336,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Quinta</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(9)}><Text>Início</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(10)}><Text>Término</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(9)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(10)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>  
         </View>
       );
     }
@@ -331,8 +350,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Sexta</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(11)}><Text>Início</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(12)}><Text>Término</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(11)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(12)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -341,8 +364,12 @@ export default class Calendario extends React.Component {
       return(
         <View style={{alignItems:"center"}}>
           <Text style={estilos.opcoesContaTab}>Sábado</Text>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(13)}><Text>Início</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => this.escolherHorarioDia(14)}><Text>Término</Text></TouchableOpacity>
+          <View style={{flexDirection:"row"}}>
+            <Text style={estilos.textoInicioTermino}>Início: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(13)}><Text style={estilos.textoHorario}>{this.state.horaInicio == "" || this.state.minutoInicio == "" || this.state.horaInicio == null || this.state.minutoInicio == null ? "Selecionar hora inicial" : this.state.horaInicio+":"+this.state.minutoInicio}</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection:"row", marginVertical:7}}>
+            <Text style={estilos.textoInicioTermino}>Término: </Text><TouchableOpacity onPress={() => this.escolherHorarioDia(14)}><Text style={estilos.textoHorario}>{this.state.horaTermino == "" || this.state.minutoTermino == "" || this.state.horaTermino == null || this.state.minutoTermino == null ? "Selecionar hora término" : this.state.horaTermino+":"+this.state.minutoTermino}</Text></TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -356,7 +383,7 @@ export default class Calendario extends React.Component {
               <ScrollView contentContainerStyle={{flexGrow: 1}}>
                 <CalendarList
                   horizontal={true}
-                  pagingEnabled={true}
+                  pagingEnabled={false}
 
                   markedDates={{
                     '2019-11-03': {startingDay: true, endingDay: true, disabled: false, color: 'red', textColor: 'white'},
@@ -371,7 +398,7 @@ export default class Calendario extends React.Component {
                   }}
                 />
                 <Text style={estilos.textHorarioAtendimentoCalendario}> Horário de Atendimento</Text>
-                <View style={{justifyContent:"center", marginBottom: 20, flexDirection:"row"}}>
+                <View style={{justifyContent:"center", marginBottom: 5, flexDirection:"row"}}>
                   <Text onPress={() => this.verHorario(1)} style={estilos.diaSemanaCalendario}> Dom </Text>
                   <Text onPress={() => this.verHorario(2)} style={estilos.diaSemanaCalendario}> Seg </Text>
                   <Text onPress={() => this.verHorario(3)} style={estilos.diaSemanaCalendario}> Ter </Text>
