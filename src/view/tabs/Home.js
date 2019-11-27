@@ -117,8 +117,6 @@ export default class Home extends React.Component {
           minutoInicioDom:minutoInicioDom,
           horaTerminoDom:horaTerminoDom,
           minutoTerminoDom:minutoTerminoDom,
-        }, ()=>{
-          console.log("Aqui" + this.state.horaInicioDom)
         })
 
       }else if((!horaInicioSeg == "" || !horaInicioSeg == null) && (!minutoInicioSeg == "" || !minutoInicioSeg == null) && (!horaTerminoSeg == "" || !horaTerminoSeg == null) && (!minutoTerminoSeg == "" || !minutoTerminoSeg == null)){
@@ -317,7 +315,7 @@ export default class Home extends React.Component {
     horarios = "Seg " + this.state.horaInicioSeg + ":" + this.state.minutoInicioSeg + " às " + this.state.horaTerminoSeg + ":" + this.state.minutoTerminoSeg + "\n" +
     "Ter " + this.state.horaInicioTer + ":" + this.state.minutoInicioTer + " às " + this.state.horaTerminoTer + ":" + this.state.minutoTerminoTer + "\n" +
     "Qua " + this.state.horaInicioQua + ":" + this.state.minutoInicioQua + " às " + this.state.horaTerminoQua + ":" + this.state.minutoTerminoQua + "\n" +
-    "Qui " +this.state.horaInicioQui + ":" + this.state.minutoInicioQui + " às " + this.state.horaTerminoQui + ":" + this.state.minutoTerminoQui + "\n" + 
+    "Qui " + this.state.horaInicioQui + ":" + this.state.minutoInicioQui + " às " + this.state.horaTerminoQui + ":" + this.state.minutoTerminoQui + "\n" + 
     "Sex " + this.state.horaInicioSex + ":" + this.state.minutoInicioSex + " às " + this.state.horaTerminoSex + ":" + this.state.minutoTerminoSex + "\n" +
     "Sab " + this.state.horaInicioSab + ":" + this.state.minutoInicioSab + " às " + this.state.horaTerminoSab + ":" + this.state.minutoTerminoSab + "\n"
 

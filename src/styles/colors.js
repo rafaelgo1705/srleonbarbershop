@@ -10,6 +10,7 @@ const colors= {
     corLinkEvento: '#1A237E',
     corButtonLogin: '#000a12',
     corSelecionado: '#e0e0e0',
+    corSalmon: '#ffdedb',
 
     corButtonFacebook: '#3c5a99',
     corInputText: '#707070',

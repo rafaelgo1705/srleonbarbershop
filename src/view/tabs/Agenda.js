@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Image, Text, TextInput, FlatList, ScrollView, TouchableOpacity, Alert} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
@@ -47,6 +48,7 @@ export default class Agenda extends React.Component {
       preco: '',
 
       //Listar Horarios
+      arrayHoras:[],
       arrayHorarios:[
         {
           id:"9",
@@ -188,6 +190,71 @@ export default class Agenda extends React.Component {
     })
   }
 
+  compararNumeros = (a, b) => {
+    return a - b;
+  }
+
+  diaDaSemana(date) {
+    var semana = new Array(7);
+    semana[0] = 1;
+    semana[1] = 2;
+    semana[2] = 3;
+    semana[3] = 4;
+    semana[4] = 5;
+    semana[5] = 6;
+    semana[6] = 7;
+    
+    return semana[date.getDay()];
+  }
+
+  carregarHorarioDia = () => {
+    var dayOfWeek = moment().toDate();
+    var diaDaSemana = this.diaDaSemana(dayOfWeek);
+
+    var ref = database().ref(`/leonbarbershop/painel/horarioAtendimento/${diaDaSemana}`)
+
+    ref.on("child_added", (snapshot) => {
+      var horaInicio = snapshot.child("horaInicio").val()
+      var minutoInicio = snapshot.child("minutoInicio").val()
+      var horaTermino = snapshot.child("horaTermino").val()
+      var minutoTermino = snapshot.child("minutoTermino").val()
+    })
+    
+  }
+
+  carregarAgendamentos = (dia) => {
+    this.setState({arrayHoras:[]})
+    var ref = database().ref(`/leonbarbershop/agendamentos`)
+
+    var query = ref.orderByChild("dia").equalTo(dia)
+
+    query.on("child_added", (snapshot) => {
+      var idCabeleireiro = snapshot.child("idCabeleireiroAgenda").val()
+      var horaInicio = snapshot.child("horaInicio").val()
+      var minutoInicio = snapshot.child("minutoInicio").val()
+      var horaFim = snapshot.child("horaFim").val()
+      var minutoFim = snapshot.child("minutoFim").val()
+
+      if(idCabeleireiro == this.state.idCabeleireiroAgenda){
+        this.setState({
+          arrayHoras:
+          [...this.state.arrayHoras, ...[
+            {
+              horaInicio:horaInicio,
+              minutoInicio:minutoInicio,
+              horaFim:horaFim,
+              minutoFim:minutoFim
+            }
+          ]]
+        }) 
+      }  
+    })
+  }
+
+  selecionarHorario = () => {
+
+  }
+
   mudarTela = (verTela) => {
     if(verTela == 0){
       this.carregarListaCortes();
@@ -243,6 +310,7 @@ export default class Agenda extends React.Component {
   }
 
   _onPressData = (date) => {
+    this.carregarAgendamentos(date.day)
     this.setState({
       dia:'',
       mes:'',
@@ -414,22 +482,25 @@ export default class Agenda extends React.Component {
           <Text style={estilos.textoNegritoAgenda}>Selecione a hora</Text>
         </View>
           <FlatList
-            data={this.state.arrayHorarios}
+            data={this.state.arrayHoras}
             renderItem={({ item }) => {
               return (
-                <TouchableOpacity
-                  onPress={() => this._onPressHorario(item)}
-                  style={[
-                    estilos.itemArray,
-                    { backgroundColor: colors.corBranca },
-                  ]}
-                >
-                  <Text style={estilos.title}>{item.hora + ":" + item.minuto}</Text>
-                </TouchableOpacity>
+                <View style={[
+                  estilos.itemArray,
+                  { backgroundColor: colors.corSalmon },
+                ]}>
+                  <View style={{flexDirection:"column"}}>
+                    <Text style={estilos.horariosAgenda}>{item.horaInicio + ":" + item.minutoInicio}</Text>
+                    <Text style={estilos.horariosAgenda}>{item.horaFim + ":" + item.minutoFim}</Text>
+                  </View>
+                </View>
               ) 
             }}
             keyExtractor={item => item.id}
           />
+          <View>
+            <Text onPress={() => this.selecionarHorario()} style={estilos.textoAgendaCliente}>Selecionar horário</Text>
+          </View>
       </View>
     );
   }

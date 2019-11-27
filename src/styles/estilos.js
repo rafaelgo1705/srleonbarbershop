@@ -448,6 +448,12 @@ const estilos = {
         fontWeight: 'bold',
         justifyContent: 'flex-start'
       },
+
+      horariosAgenda: {
+        marginLeft: 10,
+        fontSize: 14,
+        justifyContent: 'flex-start'
+      },
     
       textoNormalProduto: {
         marginLeft: 10,
