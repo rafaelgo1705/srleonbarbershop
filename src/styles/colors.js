@@ -11,6 +11,7 @@ const colors= {
     corButtonLogin: '#000a12',
     corSelecionado: '#e0e0e0',
     corSalmon: '#ffdedb',
+    corHorariosVerde: '#dffed4',
 
     corButtonFacebook: '#3c5a99',
     corInputText: '#707070',

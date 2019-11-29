@@ -1,18 +1,17 @@
 import React from 'react';
 import {View, Image, Text, TextInput, FlatList, ScrollView, TouchableOpacity, Alert} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import CalendarPicker from 'react-native-calendar-picker';
 
 import estilos from '../../styles/estilos';
 import colors from '../../styles/colors';
 
 import AgendaController from '../../controller/tabs/AgendaController';
 
-import database from '@react-native-firebase/database';
-
-import { CheckBox } from 'react-native-elements'
-import {CalendarList, LocaleConfig} from 'react-native-calendars';
+import { CheckBox } from 'react-native-elements';
+import TimePicker from "react-native-24h-timepicker";
 
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 import Base64 from '../../base64/Base64';
 
@@ -49,78 +48,6 @@ export default class Agenda extends React.Component {
 
       //Listar Horarios
       arrayHoras:[],
-      arrayHorarios:[
-        {
-          id:"9",
-          hora:"09",
-          minuto:"00"
-        },
-        {
-          id:"10",
-          hora:"10",
-          minuto:"00"
-        },
-        {
-          id:"11",
-          hora:"11",
-          minuto:"00"
-        },
-        {
-          id:"12",
-          hora:"12",
-          minuto:"00"
-        },
-        {
-          id:"13",
-          hora:"13",
-          minuto:"00"
-        },
-        {
-          id:"14",
-          hora:"14",
-          minuto:"00"
-        },
-        {
-          id:"15",
-          hora:"15",
-          minuto:"00"
-        },
-        {
-          id:"16",
-          hora:"16",
-          minuto:"00"
-        },
-        {
-          id:"17",
-          hora:"17",
-          minuto:"00"
-        },
-        {
-          id:"18",
-          hora:"18",
-          minuto:"00"
-        },
-        {
-          id:"19",
-          hora:"19",
-          minuto:"00"
-        },
-        {
-          id:"20",
-          hora:"20",
-          minuto:"00"
-        },
-        {
-          id:"21",
-          hora:"21",
-          minuto:"00"
-        },
-        {
-          id:"22",
-          hora:"22",
-          minuto:"00"
-        },
-      ],
 
       //ArrayAgenda
       //Informações Corte
@@ -139,6 +66,10 @@ export default class Agenda extends React.Component {
       ano: '',
       hora: '',
       minuto: '',
+      horaInicio: '',
+      minutoInicio: '',
+      horaTermino: '',
+      minutoTermino: '',
 
       paramim: false,
       paraoutro: false,
@@ -152,14 +83,6 @@ export default class Agenda extends React.Component {
       inputNome: '',
     }
 
-    LocaleConfig.locales['pt-br'] = {
-      monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-      monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-      dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-      dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
-      today: 'Hoje'
-    };
-    LocaleConfig.defaultLocale = 'pt-br';
   }
 
   componentDidMount(){
@@ -204,22 +127,41 @@ export default class Agenda extends React.Component {
     semana[5] = 6;
     semana[6] = 7;
     
-    return semana[date.getDay()];
+    return semana[date];
   }
 
-  carregarHorarioDia = () => {
-    var dayOfWeek = moment().toDate();
-    var diaDaSemana = this.diaDaSemana(dayOfWeek);
+  carregarHorarioDia = (dayOfWeek) => {
+    this.setState({
+      horaInicio: "",
+      minutoInicio: "",
+      horaFim: "",
+      minutoFim: "",
+    }, () => {
+      var diaDaSemana = this.diaDaSemana(dayOfWeek);
 
-    var ref = database().ref(`/leonbarbershop/painel/horarioAtendimento/${diaDaSemana}`)
+      var ref = database().ref(`/leonbarbershop/painel/horarioAtendimento/${diaDaSemana}`)
 
-    ref.on("child_added", (snapshot) => {
-      var horaInicio = snapshot.child("horaInicio").val()
-      var minutoInicio = snapshot.child("minutoInicio").val()
-      var horaTermino = snapshot.child("horaTermino").val()
-      var minutoTermino = snapshot.child("minutoTermino").val()
+      ref.on("child_added", (snapshot) => {
+        var horaInicio = snapshot.child("horaInicio").val()
+        var minutoInicio = snapshot.child("minutoInicio").val()
+        var horaTermino = snapshot.child("horaTermino").val()
+        var minutoTermino = snapshot.child("minutoTermino").val()
+
+        if((!horaInicio == null || !horaInicio == "") && (!minutoInicio == null || !minutoInicio == "")){
+          this.setState({
+            horaInicio:horaInicio,
+            minutoInicio:minutoInicio,
+          })
+        }
+
+        if((!horaTermino == null || !horaTermino == "") && (!minutoTermino == null || !minutoTermino == "")){
+          this.setState({
+            horaTermino:horaTermino,
+            minutoTermino:minutoTermino,
+          })
+        }
+      })
     })
-    
   }
 
   carregarAgendamentos = (dia) => {
@@ -251,8 +193,23 @@ export default class Agenda extends React.Component {
     })
   }
 
-  selecionarHorario = () => {
+  selecionarHorario = (hora, minuto) => {
+    var horario = hora + ":" + minuto
+    this.setState({
+      hora:hora,
+      minuto:minuto,
+      horarioSelecionado:horario
+    }, () => {
+      this.cancelarEscolhaHorario()
+    })
+  }
 
+  abrirTimePicker = () => {
+    this.TimePicker.open();
+  }
+
+  cancelarEscolhaHorario() {
+    this.TimePicker.close();
   }
 
   mudarTela = (verTela) => {
@@ -265,10 +222,20 @@ export default class Agenda extends React.Component {
       this.setState({verTela:1})
 
     }else if(verTela == 2){
+      this.setState({
+        dia:"",
+        mes:"",
+        ano:""
+      })
       this.setState({verTela:2})
 
     }else if(verTela == 3){
-      this.setState({verTela:3})
+      this.setState({
+        hora:"",
+        minuto:"",
+        verTela:3,
+        horarioSelecionado:"Selecionar horário"
+      })
 
     }else if(verTela == 4){
       this.setState({verTela:4})
@@ -310,7 +277,10 @@ export default class Agenda extends React.Component {
   }
 
   _onPressData = (date) => {
-    this.carregarAgendamentos(date.day)
+    var data = new Date(date);
+    this.carregarAgendamentos(data.getDate())
+    this.carregarHorarioDia(data.getDay());
+
     this.setState({
       dia:'',
       mes:'',
@@ -318,36 +288,48 @@ export default class Agenda extends React.Component {
     })
 
     this.setState({
-      dia:date.day,
-      mes:date.month,
-      ano:date.year,
-    }, () => {this.mudarTela(3)})
+      dia:data.getDate(),
+      mes:data.getMonth(),
+      ano:data.getFullYear(),
+    })
+  }
+
+  _onPressDataAvancar = () => {
+    if((!this.state.dia == null || !this.state.dia == "") && (!this.state.mes == null || !this.state.mes == "") && (!this.state.ano == null || !this.state.ano == "")){
+      this.mudarTela(3)
+    }else{
+      Alert.alert("Erro", "Selecione uma data, por favor!")
+    }
   }
 
   _onPressHorario = (item) => {
-    if(this.state.perfilUsuario === "normal"){
       this.setState({
         hora:'',
         minuto:'',
+      }, () => {
+        this.setState({
+          hora:item.hora,
+          minuto:item.minuto,
+        
+        })
       })
 
-      this.setState({
-        hora:item.hora,
-        minuto:item.minuto,
       
-      }, () => {this.mudarTela(4)})
-    
-    }else if(this.state.perfilUsuario === "administrador"){
-      this.setState({
-        hora:'',
-        minuto:'',
-      })
+  
+  }
 
-      this.setState({
-        hora:item.hora,
-        minuto:item.minuto,
+  _onPressHorarioAvancar = () => {
+    this.somaHora(this.state.hora+":"+ this.state.minuto, "00:"+ this.state.tempoCorte, true)
+    if((!this.state.hora == null || !this.state.hora == "") && (!this.state.minuto == null || !this.state.minuto == "")){
+      if(this.state.perfilUsuario === "normal"){
+        this.mudarTela(4)
       
-      }, () => {this.mudarTela(5)})
+      }else if(this.state.perfilUsuario === "administrador"){
+        this.mudarTela(5)
+      }
+
+    }else{
+      Alert.alert("Erro", "Selecione um horário, por favor!")
     }
   }
 
@@ -460,14 +442,19 @@ export default class Agenda extends React.Component {
           </TouchableOpacity>
           <Text style={estilos.textoNegritoAgenda}>Selecione a data</Text>
         </View>
-        <CalendarList
-          horizontal={true}
-          pagingEnabled={true}
-
-          onDayPress={(date) => {
-            this._onPressData(date)
-          }}
+        <CalendarPicker
+          onDateChange= {(data) => this._onPressData(data)}
+          weekdays={['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom']}
+          months={['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']}
+          previousTitle="Anterior"
+          nextTitle="Próximo"
+          selectedDayColor={colors.corButtonLogin}
+          selectedDayTextColor={colors.corBranca}
         />
+
+        <TouchableOpacity onPress={() => this._onPressDataAvancar()} style={estilos.buttonAgendaAdmin}>
+          <Text style={estilos.textoNegritoConta}>Avançar</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -481,12 +468,14 @@ export default class Agenda extends React.Component {
           </TouchableOpacity>
           <Text style={estilos.textoNegritoAgenda}>Selecione a hora</Text>
         </View>
+        <View style={estilos.viewHorariosAgenda}>
+          <Text style={estilos.textoHorarioInicialDisponivelAgenda}>{this.state.horaInicio + ":" + this.state.minutoInicio}</Text>
           <FlatList
             data={this.state.arrayHoras}
             renderItem={({ item }) => {
               return (
                 <View style={[
-                  estilos.itemArray,
+                  estilos.viewHorariosAgendados,
                   { backgroundColor: colors.corSalmon },
                 ]}>
                   <View style={{flexDirection:"column"}}>
@@ -498,9 +487,25 @@ export default class Agenda extends React.Component {
             }}
             keyExtractor={item => item.id}
           />
-          <View>
-            <Text onPress={() => this.selecionarHorario()} style={estilos.textoAgendaCliente}>Selecionar horário</Text>
+          <Text style={estilos.textoHorarioTerminoDisponivelAgenda}>{this.state.horaTermino + ":" + this.state.minutoTermino}</Text>
           </View>
+          <TimePicker
+                  textCancel="Cancelar"
+                  textConfirm="Confirmar"
+                  selectedHour="00"
+                  ref={ref => {
+                    this.TimePicker = ref;
+                  }}
+                  onCancel={() => this.cancelarEscolhaHorario()}
+                  onConfirm={(hour, minute) => this.selecionarHorario(hour, minute)}
+                >
+                </TimePicker>
+          <View>
+                <Text onPress={() => this.abrirTimePicker()} style={estilos.textoAgendaCliente}>{this.state.horarioSelecionado}</Text>
+          </View>
+          <TouchableOpacity onPress={() => this._onPressHorarioAvancar()} style={estilos.buttonAgendaAdmin}>
+            <Text style={estilos.textoNegritoConta}>Avançar</Text>
+          </TouchableOpacity>
       </View>
     );
   }
@@ -518,7 +523,7 @@ export default class Agenda extends React.Component {
           <Text style={estilos.textoResumoAgendaPrincipal}>Corte:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeCorte}</Text>
           <Text style={estilos.textoResumoAgendaPrincipal}>Cabeleireiro:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.nomeCabeleireiro}</Text>
           <Text style={estilos.textoResumoAgendaPrincipal}>Data:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.dia + "/" +this.state.mes + "/" + this.state.ano}</Text>
-          <Text style={estilos.textoResumoAgendaPrincipal}>Horario:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.hora + ":" + this.state.minuto}</Text>
+          <Text style={estilos.textoResumoAgendaPrincipal}>Horario:</Text><Text style={estilos.textoResumoAgendaSecundario}>{this.state.hora + ":" + this.state.minuto + " às " + this.state.horaTermino + ":" + this.state.minutoTermino}</Text>
 
           {this.validarCliente()}
         </View>
@@ -620,6 +625,39 @@ export default class Agenda extends React.Component {
     );
   }
 
+  somaHora(hrA, hrB, zerarHora) {
+    if(hrA.length != 5 || hrB.length != 5) return "00:00";
+   
+    var temp = 0;
+    var nova_h = 0;
+    var novo_m = 0;
+
+    var hora1 = hrA.substr(0, 2) * 1;
+    var hora2 = hrB.substr(0, 2) * 1;
+    var minu1 = hrA.substr(3, 2) * 1;
+    var minu2 = hrB.substr(3, 2) * 1;
+   
+    temp = minu1 + minu2;
+    while(temp > 59) {
+            nova_h++;
+            temp = temp - 60;
+    }
+    novo_m = temp.toString().length == 2 ? temp : ("0" + temp);
+
+    temp = hora1 + hora2 + nova_h;
+    while(temp > 23 && zerarHora) {
+            temp = temp - 24;
+    }
+    nova_h = temp.toString().length == 2 ? temp : ("0" + temp);
+
+    this.setState({
+      horaTermino:nova_h,
+      minutoTermino:novo_m
+    })
+
+    return nova_h + ":" + novo_m;
+}
+
   confirmarAgendamento = () => {
     if(this.state.paramim){
       this.agendaController.salvarAgendamento(
@@ -634,6 +672,8 @@ export default class Agenda extends React.Component {
         this.state.ano,
         this.state.hora,
         this.state.minuto,
+        this.state.horaTermino,
+        this.state.minutoTermino,
         this.state.nomeUsuario,
         this.state.idUsuario,
         "",
@@ -651,6 +691,8 @@ export default class Agenda extends React.Component {
         this.state.ano,
         this.state.hora,
         this.state.minuto,
+        this.state.horaTermino,
+        this.state.minutoTermino,
         this.state.inputNome,
         this.state.idUsuario,
         this.state.inputTelefone
@@ -668,6 +710,8 @@ export default class Agenda extends React.Component {
         this.state.ano,
         this.state.hora,
         this.state.minuto,
+        this.state.horaTermino,
+        this.state.minutoTermino,
         this.state.nomeUsuario,
         this.state.idUsuario,
         "",

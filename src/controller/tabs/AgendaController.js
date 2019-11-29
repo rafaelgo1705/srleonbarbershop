@@ -3,8 +3,25 @@ import {Alert} from 'react-native';
 import database from '@react-native-firebase/database';
 
 export default class AgendaController {
-    salvarAgendamento(proper, idCorteAgenda, nomeCorte, precoCorte, idCabeleireiroAgenda, nomeCabeleireiro,
-         dia, mes, ano, hora, minuto, nomeCliente, emailCliente, telefoneOutroCliente){           
+    salvarAgendamento(
+        proper, 
+        idCorteAgenda, 
+        nomeCorte, 
+        precoCorte, 
+        idCabeleireiroAgenda, 
+        nomeCabeleireiro,
+        dia,
+        mes, 
+        ano, 
+        hora, 
+        minuto,
+        horaTermino,
+        minutoTermino, 
+        nomeCliente, 
+        emailCliente, 
+        telefoneOutroCliente){      
+            
+            
         const ref = database().ref('leonbarbershop/agendamentos/');
 
         try{ 
@@ -20,8 +37,10 @@ export default class AgendaController {
                 ano: ano,
                 mes: mes,
                 dia: dia,
-                hora: hora,
-                minuto: minuto,
+                horaInicio: hora,
+                minutoInicio: minuto,
+                horaFim:horaTermino,
+                minutoFim:minutoTermino
 
             }).then(() => {
                 Alert.alert("Sucesso", "O agendamento foi realizado com sucesso!",

@@ -239,6 +239,30 @@ const estilos = {
         alignContent: 'flex-end',
         alignItems: 'center',
     },
+
+    viewHorariosAgenda: {
+        backgroundColor: colors.corHorariosVerde
+    },
+
+    textoHorarioInicialDisponivelAgenda: {
+        paddingTop: 10,
+        paddingBottom: 20,
+        paddingHorizontal: 20,
+    },
+
+    textoHorarioTerminoDisponivelAgenda: {
+        paddingTop: 20,
+        paddingBottom: 10,
+        paddingHorizontal: 20,
+    },
+
+    viewHorariosAgendados: {
+        borderBottomWidth: 0.5,
+        borderColor: colors.corSelecionado,
+        paddingHorizontal: 20,
+        paddingVertical: 7,
+        flexDirection: 'row',
+      },
     /**Fim Tela Tab Agenda*/
 
     /**Tela Resumo Agenda */
@@ -450,7 +474,6 @@ const estilos = {
       },
 
       horariosAgenda: {
-        marginLeft: 10,
         fontSize: 14,
         justifyContent: 'flex-start'
       },
